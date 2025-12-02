@@ -33,6 +33,29 @@ export const FontSelector = ({ value, onValueChange }: FontSelectorProps) => {
   const [loading, setLoading] = useState(true);
   const t = useTranslation();
 
+  // Load the selected Google Font so we can show a live preview
+  useEffect(() => {
+    if (!value) return;
+
+    const id = `google-font-preview-${value.replace(/\s+/g, "-").toLowerCase()}`;
+    if (document.getElementById(id)) return;
+
+    const link = document.createElement("link");
+    link.id = id;
+    link.rel = "stylesheet";
+    // Basic Google Fonts CSS2 URL for the family
+    link.href = `https://fonts.googleapis.com/css2?family=${encodeURIComponent(
+      value
+    )}:wght@400;600&display=swap`;
+
+    document.head.appendChild(link);
+
+    return () => {
+      // We intentionally do not remove the link tag on unmount/value change
+      // so that once loaded fonts stay cached and available while the app is open.
+    };
+  }, [value]);
+
   useEffect(() => {
     const fetchFonts = async () => {
       try {
@@ -120,6 +143,19 @@ export const FontSelector = ({ value, onValueChange }: FontSelectorProps) => {
           </Command>
         </PopoverContent>
       </Popover>
+      {value && (
+        <div className="rounded-lg border border-dashed border-border bg-muted/40 px-4 py-3">
+          <p className="text-xs font-medium text-muted-foreground mb-1">
+            Font preview ({value})
+          </p>
+          <p
+            className="text-base leading-relaxed text-foreground"
+            style={{ fontFamily: `'${value}', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif` }}
+          >
+            The quick brown fox jumps over the lazy dog — 0123456789
+          </p>
+        </div>
+      )}
     </div>
   );
 };
