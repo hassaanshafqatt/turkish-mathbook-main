@@ -29,10 +29,13 @@ RUN apk add --no-cache wget
 # Copy built assets from builder stage
 COPY --from=builder /app/dist /usr/share/nginx/html
 
+# Remove default nginx configuration that listens on port 80
+RUN rm -f /etc/nginx/conf.d/default.conf
+
 # Copy nginx configuration
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
-# Expose port 80
+# Expose port 7893
 EXPOSE 7893
 
 # Start nginx
