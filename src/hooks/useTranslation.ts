@@ -1,0 +1,131 @@
+import { getLanguage } from "@/components/SettingsDialog";
+
+const translations = {
+  en: {
+    // Main page
+    title: "MathBook Content Generator",
+    subtitle: "Generate interactive mathbook content with custom typography and AI narration",
+    footer: "AI-Powered Math Education • Processed via n8n",
+    
+    // Settings
+    settings: "Settings",
+    settingsDescription: "Configure your application settings",
+    webhook: "Webhook",
+    voices: "Voices",
+    language: "Language",
+    
+    // Webhook tab
+    webhookUrl: "n8n Webhook URL",
+    webhookPlaceholder: "https://your-n8n-instance.com/webhook/...",
+    webhookDescription: "n8n webhook endpoint for processing mathbook content",
+    saveWebhook: "Save Webhook",
+    
+    // Voices tab
+    voiceIdPlaceholder: "Voice ID (e.g., 9BWtsMINqrJLrRacOk9x)",
+    voiceNamePlaceholder: "Voice Name (e.g., Aria)",
+    addVoice: "Add Voice",
+    noVoicesConfigured: "No voices configured. Add voices to see them in the selector.",
+    
+    // Language tab
+    selectLanguage: "Select Language",
+    english: "English",
+    turkish: "Türkçe",
+    languageDescription: "Application language will be changed",
+    
+    // Form
+    uploadLabel: "Upload PDF Document",
+    dragDropText: "Drag and drop a PDF file here, or click to select",
+    selectedFile: "Selected file:",
+    removeFile: "Remove",
+    fontLabel: "Select Font",
+    searchFonts: "Search fonts...",
+    noFontsFound: "No fonts found.",
+    loadingFonts: "Loading fonts...",
+    voiceLabel: "Select Narration Voice",
+    chooseVoice: "Choose a voice",
+    noVoicesInSelector: "No voices configured. Please add voices in settings.",
+    voiceDescription: "AI voice for explaining math concepts and narration",
+    generateButton: "Generate MathBook Content",
+    generating: "Generating Content...",
+    
+    // Toasts
+    uploadPdfError: "Please upload a PDF file",
+    selectFontError: "Please enter a Font",
+    selectVoiceError: "Please select a voice",
+    configureWebhookError: "Please configure webhook URL in settings",
+    submitSuccess: "Mathbook generation request submitted successfully!",
+    submitError: "Failed to submit request. Please try again.",
+    webhookUrlError: "Please enter a webhook URL",
+    webhookSaved: "Webhook saved",
+    voiceAddError: "Please enter both voice ID and name",
+    voiceAdded: "Voice added",
+    voiceRemoved: "Voice removed",
+    languageSaved: "Language saved",
+  },
+  tr: {
+    // Ana sayfa
+    title: "MathBook İçerik Oluşturucu",
+    subtitle: "Özel tipografi ve yapay zeka anlatımıyla interaktif matematik kitabı içeriği oluşturun",
+    footer: "Yapay Zeka Destekli Matematik Eğitimi • n8n ile İşleniyor",
+    
+    // Ayarlar
+    settings: "Ayarlar",
+    settingsDescription: "Uygulama ayarlarınızı yapılandırın",
+    webhook: "Webhook",
+    voices: "Sesler",
+    language: "Dil",
+    
+    // Webhook sekmesi
+    webhookUrl: "n8n Webhook URL",
+    webhookPlaceholder: "https://your-n8n-instance.com/webhook/...",
+    webhookDescription: "Matematik kitabı içeriğini işlemek için n8n webhook adresi",
+    saveWebhook: "Webhook'u Kaydet",
+    
+    // Sesler sekmesi
+    voiceIdPlaceholder: "Ses ID (örn: 9BWtsMINqrJLrRacOk9x)",
+    voiceNamePlaceholder: "Ses Adı (örn: Aria)",
+    addVoice: "Ses Ekle",
+    noVoicesConfigured: "Yapılandırılmış ses yok. Seçicide görmek için sesler ekleyin.",
+    
+    // Dil sekmesi
+    selectLanguage: "Dil Seçin",
+    english: "English",
+    turkish: "Türkçe",
+    languageDescription: "Uygulama dili değiştirilecek",
+    
+    // Form
+    uploadLabel: "PDF Belgesi Yükle",
+    dragDropText: "Bir PDF dosyasını buraya sürükleyip bırakın veya seçmek için tıklayın",
+    selectedFile: "Seçilen dosya:",
+    removeFile: "Kaldır",
+    fontLabel: "Font Seç",
+    searchFonts: "Font ara...",
+    noFontsFound: "Font bulunamadı.",
+    loadingFonts: "Fontlar yükleniyor...",
+    voiceLabel: "Anlatım Sesi Seç",
+    chooseVoice: "Bir ses seçin",
+    noVoicesInSelector: "Yapılandırılmış ses yok. Lütfen ayarlardan ses ekleyin.",
+    voiceDescription: "Matematik kavramlarını açıklamak ve anlatım için yapay zeka sesi",
+    generateButton: "MathBook İçeriği Oluştur",
+    generating: "İçerik Oluşturuluyor...",
+    
+    // Bildirimler
+    uploadPdfError: "Lütfen bir PDF dosyası yükleyin",
+    selectFontError: "Lütfen bir Font girin",
+    selectVoiceError: "Lütfen bir ses seçin",
+    configureWebhookError: "Lütfen ayarlardan webhook URL'sini yapılandırın",
+    submitSuccess: "Matematik kitabı oluşturma isteği başarıyla gönderildi!",
+    submitError: "İstek gönderilemedi. Lütfen tekrar deneyin.",
+    webhookUrlError: "Lütfen bir webhook URL'si girin",
+    webhookSaved: "Webhook kaydedildi",
+    voiceAddError: "Lütfen hem ses ID'sini hem de adını girin",
+    voiceAdded: "Ses eklendi",
+    voiceRemoved: "Ses kaldırıldı",
+    languageSaved: "Dil kaydedildi",
+  },
+};
+
+export const useTranslation = () => {
+  const lang = getLanguage() as keyof typeof translations;
+  return translations[lang] || translations.en;
+};
