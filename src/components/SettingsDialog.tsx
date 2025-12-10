@@ -355,3 +355,37 @@ export const SettingsDialog = () => {
     </Dialog>
   );
 };
+
+// Helper functions for backwards compatibility with existing code
+export const getLanguage = () => {
+  return localStorage.getItem('mathbook_language') || 'en';
+};
+
+export const getConfiguredVoices = async (): Promise<Voice[]> => {
+  try {
+    const API_URL = '/api/settings';
+    const response = await fetch(API_URL);
+    if (response.ok) {
+      const data = await response.json();
+      return data.voices || [];
+    }
+  } catch (error) {
+    console.error("Failed to fetch voices:", error);
+  }
+  return [];
+};
+
+export const getWebhookUrl = async (): Promise<string> => {
+  try {
+    const API_URL = '/api/settings';
+    const response = await fetch(API_URL);
+    if (response.ok) {
+      const data = await response.json();
+      const activeWebhook = data.webhooks?.find((w: Webhook) => w.active);
+      return activeWebhook?.url || '';
+    }
+  } catch (error) {
+    console.error("Failed to fetch webhook:", error);
+  }
+  return '';
+};

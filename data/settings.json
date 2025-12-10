@@ -1,0 +1,10 @@
+{
+  "webhooks": [],
+  "voices": [
+    {
+      "id": "1234",
+      "name": "test"
+    }
+  ],
+  "language": "en"
+}
