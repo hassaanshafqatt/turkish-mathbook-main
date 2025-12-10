@@ -220,17 +220,17 @@ export const SettingsDialog = () => {
             <div className="space-y-4">
               {/* Add New Webhook */}
               <div className="grid gap-3 p-4 border rounded-lg bg-muted/50">
-                <p className="text-sm font-medium">Add New Webhook</p>
+                <p className="text-sm font-medium">{t.addNewWebhook}</p>
                 <div className="grid grid-cols-1 gap-2">
                   <Input
-                    placeholder="Webhook Name (e.g. Production)"
+                    placeholder={t.webhookName}
                     value={newWebhookName}
                     onChange={(e) => setNewWebhookName(e.target.value)}
                     className="bg-background"
                   />
                   <Input
                     type="url"
-                    placeholder="Webhook URL (https://...)"
+                    placeholder={t.webhookUrlLabel}
                     value={newWebhookUrl}
                     onChange={(e) => setNewWebhookUrl(e.target.value)}
                     className="bg-background"
@@ -238,32 +238,32 @@ export const SettingsDialog = () => {
                 </div>
                 <Button onClick={handleAddWebhook} size="sm" className="w-full">
                   <Plus className="h-4 w-4 mr-2" />
-                  Add Webhook
+                  {t.addWebhookButton}
                 </Button>
               </div>
 
               {/* List Webhooks */}
               <div className="space-y-2">
-                <Label>Saved Webhooks</Label>
+                <Label>{t.savedWebhooks}</Label>
                 {settings.webhooks.length === 0 ? (
-                  <p className="text-sm text-muted-foreground text-center py-4">No webhooks configured</p>
+                  <p className="text-sm text-muted-foreground text-center py-4">{t.noWebhooksConfigured}</p>
                 ) : (
                   settings.webhooks.map((webhook) => (
                     <div key={webhook.id} className={`flex items-center justify-between p-3 rounded-lg border ${webhook.active ? 'border-primary bg-primary/5' : 'border-border bg-background'}`}>
                       <div className="flex-1 min-w-0 mr-2">
                         <div className="flex items-center gap-2">
                           <p className="font-medium truncate">{webhook.name}</p>
-                          {webhook.active && <span className="text-[10px] bg-primary text-primary-foreground px-1.5 py-0.5 rounded">Active</span>}
+                          {webhook.active && <span className="text-[10px] bg-primary text-primary-foreground px-1.5 py-0.5 rounded">{t.activeWebhook}</span>}
                         </div>
                         <p className="text-xs text-muted-foreground truncate" title={webhook.url}>{webhook.url}</p>
                       </div>
                       <div className="flex items-center gap-1">
                         {!webhook.active && (
-                          <Button size="sm" variant="ghost" onClick={() => handleSetActiveWebhook(webhook.id)} title="Set Active">
+                          <Button size="sm" variant="ghost" onClick={() => handleSetActiveWebhook(webhook.id)} title={t.setActive}>
                             <Check className="h-4 w-4" />
                           </Button>
                         )}
-                        <Button size="sm" variant="ghost" onClick={() => handleDeleteWebhook(webhook.id)} title="Delete">
+                        <Button size="sm" variant="ghost" onClick={() => handleDeleteWebhook(webhook.id)} title={t.deleteWebhook}>
                           <Trash2 className="h-4 w-4 text-destructive" />
                         </Button>
                       </div>

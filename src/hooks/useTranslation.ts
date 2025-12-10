@@ -19,6 +19,15 @@ const translations = {
     webhookPlaceholder: "https://your-n8n-instance.com/webhook/...",
     webhookDescription: "n8n webhook endpoint for processing mathbook content",
     saveWebhook: "Save Webhook",
+    addNewWebhook: "Add New Webhook",
+    webhookName: "Webhook Name (e.g. Production)",
+    webhookUrlLabel: "Webhook URL (https://...)",
+    addWebhookButton: "Add Webhook",
+    savedWebhooks: "Saved Webhooks",
+    noWebhooksConfigured: "No webhooks configured",
+    activeWebhook: "Active",
+    setActive: "Set Active",
+    deleteWebhook: "Delete",
     
     // Voices tab
     voiceIdPlaceholder: "Voice ID (e.g., 9BWtsMINqrJLrRacOk9x)",
@@ -47,6 +56,13 @@ const translations = {
     voiceDescription: "AI voice for explaining math concepts and narration",
     generateButton: "Generate MathBook Content",
     generating: "Generating Content...",
+    
+    // Animation Settings
+    animationSettings: "Animation Settings",
+    showHandAnimation: "Show Hand Animation",
+    showHandAnimationDesc: "Display hand writing animation",
+    showOptionsAnimation: "Show Options Animation",
+    showOptionsAnimationDesc: "Animate the appearance of options",
     
     // Toasts
     uploadPdfError: "Please upload a PDF file",
@@ -80,6 +96,15 @@ const translations = {
     webhookPlaceholder: "https://your-n8n-instance.com/webhook/...",
     webhookDescription: "Matematik kitabı içeriğini işlemek için n8n webhook adresi",
     saveWebhook: "Webhook'u Kaydet",
+    addNewWebhook: "Yeni Webhook Ekle",
+    webhookName: "Webhook Adı (örn. Üretim)",
+    webhookUrlLabel: "Webhook URL (https://...)",
+    addWebhookButton: "Webhook Ekle",
+    savedWebhooks: "Kayıtlı Webhook'lar",
+    noWebhooksConfigured: "Yapılandırılmış webhook yok",
+    activeWebhook: "Aktif",
+    setActive: "Aktif Yap",
+    deleteWebhook: "Sil",
     
     // Sesler sekmesi
     voiceIdPlaceholder: "Ses ID (örn: 9BWtsMINqrJLrRacOk9x)",
@@ -108,6 +133,13 @@ const translations = {
     voiceDescription: "Matematik kavramlarını açıklamak ve anlatım için yapay zeka sesi",
     generateButton: "MathBook İçeriği Oluştur",
     generating: "İçerik Oluşturuluyor...",
+    
+    // Animasyon Ayarları
+    animationSettings: "Animasyon Ayarları",
+    showHandAnimation: "El Animasyonunu Göster",
+    showHandAnimationDesc: "El yazısı animasyonunu göster",
+    showOptionsAnimation: "Seçenek Animasyonunu Göster",
+    showOptionsAnimationDesc: "Seçeneklerin görünüm animasyonu",
     
     // Bildirimler
     uploadPdfError: "Lütfen bir PDF dosyası yükleyin",

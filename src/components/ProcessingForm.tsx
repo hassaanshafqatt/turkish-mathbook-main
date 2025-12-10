@@ -107,12 +107,12 @@ export const ProcessingForm = () => {
 
       {/* Animation Toggles */}
       <div className="space-y-4 border p-4 rounded-lg bg-card/50">
-        <h3 className="font-medium text-sm text-foreground mb-2">Animation Settings</h3>
+        <h3 className="font-medium text-sm text-foreground mb-2">{t.animationSettings}</h3>
 
         <div className="flex items-center justify-between space-x-2">
           <Label htmlFor="hand-animation" className="flex flex-col space-y-1 cursor-pointer">
-            <span>Show Hand Animation</span>
-            <span className="font-normal text-xs text-muted-foreground">Display hand writing animation</span>
+            <span>{t.showHandAnimation}</span>
+            <span className="font-normal text-xs text-muted-foreground">{t.showHandAnimationDesc}</span>
           </Label>
           <Switch
             id="hand-animation"
@@ -123,8 +123,8 @@ export const ProcessingForm = () => {
 
         <div className="flex items-center justify-between space-x-2">
           <Label htmlFor="options-animation" className="flex flex-col space-y-1 cursor-pointer">
-            <span>Show Options Animation</span>
-            <span className="font-normal text-xs text-muted-foreground">Animate the appearance of options</span>
+            <span>{t.showOptionsAnimation}</span>
+            <span className="font-normal text-xs text-muted-foreground">{t.showOptionsAnimationDesc}</span>
           </Label>
           <Switch
             id="options-animation"
