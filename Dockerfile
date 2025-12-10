@@ -7,37 +7,37 @@ WORKDIR /app
 COPY package*.json ./
 COPY bun.lockb* ./
 
-# Install dependencies
+# Install dependencies (including devDependencies for build)
 RUN npm ci
 
 # Copy source code
 COPY . .
 
-# Build arguments for environment variables
-ARG VITE_WEBHOOK_URL
-ENV VITE_WEBHOOK_URL=$VITE_WEBHOOK_URL
-
-# Build the application
+# Build the frontend
 RUN npm run build
 
-# Production stage
-FROM nginx:alpine
+# Production stage (Node.js instead of Nginx)
+FROM node:20-alpine
 
-# Install wget for health checks
-RUN apk add --no-cache wget
+WORKDIR /app
 
-# Copy built assets from builder stage
-COPY --from=builder /app/dist /usr/share/nginx/html
+# Copy package files for production dependency installation
+COPY package*.json ./
 
-# Remove default nginx configuration that listens on port 80
-RUN rm -f /etc/nginx/conf.d/default.conf
+# Install ONLY production dependencies (express, cors, etc.)
+RUN npm ci --only=production
 
-# Copy nginx configuration
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+# Copy built frontend from builder
+COPY --from=builder /app/dist ./dist
 
-# Expose port 7893
+# Copy server code
+COPY server.js .
+
+# Create data directory
+RUN mkdir -p data
+
+# Expose port
 EXPOSE 7893
 
-# Start nginx
-CMD ["nginx", "-g", "daemon off;"]
-
+# Start server
+CMD ["node", "server.js"]

@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Settings, Plus, Trash2 } from "lucide-react";
+import { Settings, Plus, Trash2, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -13,81 +13,181 @@ import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
 import { useTranslation } from "@/hooks/useTranslation";
+import { Label } from "@/components/ui/label";
 
-const WEBHOOK_STORAGE_KEY = "mathbook_webhook_url";
-const VOICES_STORAGE_KEY = "mathbook_voices";
-const LANGUAGE_STORAGE_KEY = "mathbook_language";
+// Types matching the server backend
+export interface Webhook {
+  id: string;
+  name: string;
+  url: string;
+  active: boolean;
+}
 
-// Get permanent webhook URL from environment variable
-const PERMANENT_WEBHOOK_URL = import.meta.env.VITE_WEBHOOK_URL || "";
-
-interface Voice {
+export interface Voice {
   id: string;
   name: string;
 }
 
+export interface AppSettings {
+  webhooks: Webhook[];
+  voices: Voice[];
+  language: string;
+}
+
+const API_URL = import.meta.env.DEV ? 'http://localhost:7893/api/settings' : '/api/settings';
+
 export const SettingsDialog = () => {
-  const [webhookUrl, setWebhookUrl] = useState("");
-  const [voices, setVoices] = useState<Voice[]>([]);
+  const [settings, setSettings] = useState<AppSettings>({
+    webhooks: [],
+    voices: [],
+    language: 'en'
+  });
+
+  // Webhook form state
+  const [newWebhookName, setNewWebhookName] = useState("");
+  const [newWebhookUrl, setNewWebhookUrl] = useState("");
+
+  // Voice form state
   const [newVoiceId, setNewVoiceId] = useState("");
   const [newVoiceName, setNewVoiceName] = useState("");
-  const [language, setLanguage] = useState("en");
+
   const [open, setOpen] = useState(false);
   const t = useTranslation();
 
-  useEffect(() => {
-    // Use permanent webhook URL if set, otherwise use saved one from localStorage
-    const savedWebhook = localStorage.getItem(WEBHOOK_STORAGE_KEY);
-    const savedVoices = localStorage.getItem(VOICES_STORAGE_KEY);
-    const savedLanguage = localStorage.getItem(LANGUAGE_STORAGE_KEY);
-    
-    if (PERMANENT_WEBHOOK_URL) {
-      setWebhookUrl(PERMANENT_WEBHOOK_URL);
-    } else if (savedWebhook) {
-      setWebhookUrl(savedWebhook);
+  // Load settings from API
+  const fetchSettings = async () => {
+    try {
+      const response = await fetch(API_URL);
+      if (response.ok) {
+        const data = await response.json();
+        setSettings(data);
+        // Sync language to local storage for immediate UI translation updates if needed,
+        // though ideally we'd use the settings state context.
+        // For compatibility with useTranslation hook:
+        if (data.language) localStorage.setItem('mathbook_language', data.language);
+      }
+    } catch (error) {
+      console.error("Failed to fetch settings:", error);
+      toast.error("Failed to load settings");
     }
-    if (savedVoices) setVoices(JSON.parse(savedVoices));
-    if (savedLanguage) setLanguage(savedLanguage);
-  }, []);
+  };
 
-  const handleSaveWebhook = () => {
-    if (!webhookUrl.trim()) {
-      toast.error(t.webhookUrlError);
+  useEffect(() => {
+    if (open) {
+      fetchSettings();
+    }
+  }, [open]);
+
+  const saveSettings = async (newSettings: AppSettings) => {
+    try {
+      const response = await fetch(API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newSettings)
+      });
+
+      if (!response.ok) throw new Error("Failed to save");
+
+      setSettings(newSettings);
+
+      // Update local storage for language
+      if (newSettings.language !== settings.language) {
+        localStorage.setItem('mathbook_language', newSettings.language);
+        window.location.reload();
+      }
+
+      return true;
+    } catch (error) {
+      console.error("Failed to save settings:", error);
+      toast.error("Failed to save settings");
+      return false;
+    }
+  };
+
+  // Webhook handlers
+  const handleAddWebhook = async () => {
+    if (!newWebhookName.trim() || !newWebhookUrl.trim()) {
+      toast.error(t.webhookUrlError || "Please enter both name and URL");
       return;
     }
-    // Only save to localStorage if permanent webhook is not set
-    if (!PERMANENT_WEBHOOK_URL) {
-      localStorage.setItem(WEBHOOK_STORAGE_KEY, webhookUrl);
+
+    const newWebhook: Webhook = {
+      id: crypto.randomUUID(),
+      name: newWebhookName,
+      url: newWebhookUrl,
+      active: settings.webhooks.length === 0 // Make active if it's the first one
+    };
+
+    const updatedSettings = {
+      ...settings,
+      webhooks: [...settings.webhooks, newWebhook]
+    };
+
+    if (await saveSettings(updatedSettings)) {
+      setNewWebhookName("");
+      setNewWebhookUrl("");
       toast.success(t.webhookSaved);
     }
   };
 
-  const handleAddVoice = () => {
+  const handleDeleteWebhook = async (id: string) => {
+    const updatedSettings = {
+      ...settings,
+      webhooks: settings.webhooks.filter(w => w.id !== id)
+    };
+    if (await saveSettings(updatedSettings)) {
+      toast.success("Webhook removed");
+    }
+  };
+
+  const handleSetActiveWebhook = async (id: string) => {
+    const updatedSettings = {
+      ...settings,
+      webhooks: settings.webhooks.map(w => ({
+        ...w,
+        active: w.id === id
+      }))
+    };
+    if (await saveSettings(updatedSettings)) {
+      toast.success("Active webhook updated");
+    }
+  };
+
+  // Voice handlers
+  const handleAddVoice = async () => {
     if (!newVoiceId.trim() || !newVoiceName.trim()) {
       toast.error(t.voiceAddError);
       return;
     }
-    
-    const updatedVoices = [...voices, { id: newVoiceId, name: newVoiceName }];
-    setVoices(updatedVoices);
-    localStorage.setItem(VOICES_STORAGE_KEY, JSON.stringify(updatedVoices));
-    setNewVoiceId("");
-    setNewVoiceName("");
-    toast.success(t.voiceAdded);
+
+    const updatedSettings = {
+      ...settings,
+      voices: [...settings.voices, { id: newVoiceId, name: newVoiceName }]
+    };
+
+    if (await saveSettings(updatedSettings)) {
+      setNewVoiceId("");
+      setNewVoiceName("");
+      toast.success(t.voiceAdded);
+    }
   };
 
-  const handleDeleteVoice = (id: string) => {
-    const updatedVoices = voices.filter(v => v.id !== id);
-    setVoices(updatedVoices);
-    localStorage.setItem(VOICES_STORAGE_KEY, JSON.stringify(updatedVoices));
-    toast.success(t.voiceRemoved);
+  const handleDeleteVoice = async (id: string) => {
+    const updatedSettings = {
+      ...settings,
+      voices: settings.voices.filter(v => v.id !== id)
+    };
+    if (await saveSettings(updatedSettings)) {
+      toast.success(t.voiceRemoved);
+    }
   };
 
-  const handleSaveLanguage = (lang: string) => {
-    setLanguage(lang);
-    localStorage.setItem(LANGUAGE_STORAGE_KEY, lang);
-    toast.success(t.languageSaved);
-    window.location.reload();
+  // Language handler
+  const handleSaveLanguage = async (lang: string) => {
+    const updatedSettings = { ...settings, language: lang };
+    if (await saveSettings(updatedSettings)) {
+      toast.success(t.languageSaved);
+    }
   };
 
   return (
@@ -101,53 +201,80 @@ export const SettingsDialog = () => {
           <Settings className="h-5 w-5" />
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[600px]">
+      <DialogContent className="sm:max-w-[600px] h-[80vh] flex flex-col">
         <DialogHeader>
           <DialogTitle>{t.settings}</DialogTitle>
           <DialogDescription>
             {t.settingsDescription}
           </DialogDescription>
         </DialogHeader>
-        
-        <Tabs defaultValue="webhook" className="w-full">
-          <TabsList className="grid w-full grid-cols-3">
+
+        <Tabs defaultValue="webhook" className="w-full flex-1 overflow-hidden flex flex-col">
+          <TabsList className="grid w-full grid-cols-3 shrink-0">
             <TabsTrigger value="webhook">{t.webhook}</TabsTrigger>
             <TabsTrigger value="voices">{t.voices}</TabsTrigger>
             <TabsTrigger value="language">{t.language}</TabsTrigger>
           </TabsList>
-          
-          <TabsContent value="webhook" className="space-y-4">
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-foreground">
-                {t.webhookUrl}
-              </label>
-              <Input
-                type="url"
-                value={webhookUrl}
-                onChange={(e) => setWebhookUrl(e.target.value)}
-                placeholder={t.webhookPlaceholder}
-                className="bg-background border-border"
-                disabled={!!PERMANENT_WEBHOOK_URL}
-              />
-              {PERMANENT_WEBHOOK_URL && (
-                <p className="text-xs text-primary font-medium">
-                  Using permanent webhook URL (set via environment variable)
-                </p>
-              )}
-              <p className="text-xs text-muted-foreground">
-                {t.webhookDescription}
-              </p>
-            </div>
-            {!PERMANENT_WEBHOOK_URL && (
-              <div className="flex justify-end">
-                <Button onClick={handleSaveWebhook} className="bg-gradient-primary hover:opacity-90">
-                  {t.saveWebhook}
+
+          <TabsContent value="webhook" className="space-y-4 flex-1 overflow-y-auto p-1">
+            <div className="space-y-4">
+              {/* Add New Webhook */}
+              <div className="grid gap-3 p-4 border rounded-lg bg-muted/50">
+                <p className="text-sm font-medium">Add New Webhook</p>
+                <div className="grid grid-cols-1 gap-2">
+                  <Input
+                    placeholder="Webhook Name (e.g. Production)"
+                    value={newWebhookName}
+                    onChange={(e) => setNewWebhookName(e.target.value)}
+                    className="bg-background"
+                  />
+                  <Input
+                    type="url"
+                    placeholder="Webhook URL (https://...)"
+                    value={newWebhookUrl}
+                    onChange={(e) => setNewWebhookUrl(e.target.value)}
+                    className="bg-background"
+                  />
+                </div>
+                <Button onClick={handleAddWebhook} size="sm" className="w-full">
+                  <Plus className="h-4 w-4 mr-2" />
+                  Add Webhook
                 </Button>
               </div>
-            )}
+
+              {/* List Webhooks */}
+              <div className="space-y-2">
+                <Label>Saved Webhooks</Label>
+                {settings.webhooks.length === 0 ? (
+                  <p className="text-sm text-muted-foreground text-center py-4">No webhooks configured</p>
+                ) : (
+                  settings.webhooks.map((webhook) => (
+                    <div key={webhook.id} className={`flex items-center justify-between p-3 rounded-lg border ${webhook.active ? 'border-primary bg-primary/5' : 'border-border bg-background'}`}>
+                      <div className="flex-1 min-w-0 mr-2">
+                        <div className="flex items-center gap-2">
+                          <p className="font-medium truncate">{webhook.name}</p>
+                          {webhook.active && <span className="text-[10px] bg-primary text-primary-foreground px-1.5 py-0.5 rounded">Active</span>}
+                        </div>
+                        <p className="text-xs text-muted-foreground truncate" title={webhook.url}>{webhook.url}</p>
+                      </div>
+                      <div className="flex items-center gap-1">
+                        {!webhook.active && (
+                          <Button size="sm" variant="ghost" onClick={() => handleSetActiveWebhook(webhook.id)} title="Set Active">
+                            <Check className="h-4 w-4" />
+                          </Button>
+                        )}
+                        <Button size="sm" variant="ghost" onClick={() => handleDeleteWebhook(webhook.id)} title="Delete">
+                          <Trash2 className="h-4 w-4 text-destructive" />
+                        </Button>
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
+            </div>
           </TabsContent>
-          
-          <TabsContent value="voices" className="space-y-4">
+
+          <TabsContent value="voices" className="space-y-4 flex-1 overflow-y-auto p-1">
             <div className="space-y-4">
               <div className="grid grid-cols-2 gap-3">
                 <Input
@@ -168,14 +295,14 @@ export const SettingsDialog = () => {
                 {t.addVoice}
               </Button>
             </div>
-            
-            <div className="space-y-2 max-h-[300px] overflow-y-auto">
-              {voices.length === 0 ? (
+
+            <div className="space-y-2">
+              {settings.voices.length === 0 ? (
                 <p className="text-sm text-muted-foreground text-center py-4">
                   {t.noVoicesConfigured}
                 </p>
               ) : (
-                voices.map((voice) => (
+                settings.voices.map((voice) => (
                   <div
                     key={voice.id}
                     className="flex items-center justify-between p-3 rounded-lg border border-border bg-background"
@@ -196,22 +323,22 @@ export const SettingsDialog = () => {
               )}
             </div>
           </TabsContent>
-          
-          <TabsContent value="language" className="space-y-4">
+
+          <TabsContent value="language" className="space-y-4 flex-1 overflow-y-auto p-1">
             <div className="space-y-2">
               <label className="text-sm font-medium text-foreground">
                 {t.selectLanguage}
               </label>
               <div className="grid grid-cols-2 gap-3">
                 <Button
-                  variant={language === "en" ? "default" : "outline"}
+                  variant={settings.language === "en" ? "default" : "outline"}
                   onClick={() => handleSaveLanguage("en")}
                   className="w-full"
                 >
                   {t.english}
                 </Button>
                 <Button
-                  variant={language === "tr" ? "default" : "outline"}
+                  variant={settings.language === "tr" ? "default" : "outline"}
                   onClick={() => handleSaveLanguage("tr")}
                   className="w-full"
                 >
@@ -227,18 +354,4 @@ export const SettingsDialog = () => {
       </DialogContent>
     </Dialog>
   );
-};
-
-export const getWebhookUrl = () => {
-  // Priority: 1. Permanent webhook from env, 2. User-saved webhook from localStorage
-  return PERMANENT_WEBHOOK_URL || localStorage.getItem(WEBHOOK_STORAGE_KEY) || "";
-};
-
-export const getConfiguredVoices = (): Voice[] => {
-  const saved = localStorage.getItem(VOICES_STORAGE_KEY);
-  return saved ? JSON.parse(saved) : [];
-};
-
-export const getLanguage = () => {
-  return localStorage.getItem(LANGUAGE_STORAGE_KEY) || "en";
 };

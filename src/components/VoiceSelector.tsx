@@ -6,26 +6,36 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { getConfiguredVoices } from "./SettingsDialog";
 import { useTranslation } from "@/hooks/useTranslation";
-
-interface Voice {
-  id: string;
-  name: string;
-}
+import { Voice } from "./SettingsDialog";
 
 interface VoiceSelectorProps {
   value: string;
   onValueChange: (value: string) => void;
 }
 
+const API_URL = import.meta.env.DEV ? 'http://localhost:7893/api/settings' : '/api/settings';
+
 export const VoiceSelector = ({ value, onValueChange }: VoiceSelectorProps) => {
   const [voices, setVoices] = useState<Voice[]>([]);
   const t = useTranslation();
 
   useEffect(() => {
-    const configuredVoices = getConfiguredVoices();
-    setVoices(configuredVoices);
+    const fetchVoices = async () => {
+      try {
+        const response = await fetch(API_URL);
+        if (response.ok) {
+          const data = await response.json();
+          if (data.voices && Array.isArray(data.voices)) {
+            setVoices(data.voices);
+          }
+        }
+      } catch (error) {
+        console.error("Failed to fetch voices:", error);
+      }
+    };
+
+    fetchVoices();
   }, []);
 
   return (
