@@ -1,13 +1,19 @@
 import { ProcessingForm } from "@/components/ProcessingForm";
 import { SettingsDialog } from "@/components/SettingsDialog";
+import { UserMenu } from "@/components/auth/UserMenu";
 import { BookOpen } from "lucide-react";
 import { useTranslation } from "@/hooks/useTranslation";
 
 const Index = () => {
   const t = useTranslation();
-  
+
   return (
     <div className="min-h-screen bg-gradient-subtle">
+      <div className="container max-w-4xl mx-auto px-4 py-6">
+        <div className="flex justify-end mb-6">
+          <UserMenu />
+        </div>
+      </div>
       <SettingsDialog />
       <div className="container max-w-4xl mx-auto px-4 py-12">
         <header className="text-center mb-12 animate-fade-in">

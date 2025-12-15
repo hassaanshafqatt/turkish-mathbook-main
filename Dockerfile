@@ -3,6 +3,16 @@ FROM node:20-alpine AS builder
 
 WORKDIR /app
 
+# Define build arguments
+ARG VITE_SUPABASE_URL
+ARG VITE_SUPABASE_ANON_KEY
+ARG VITE_WEBHOOK_URL
+
+# Set as environment variables for build
+ENV VITE_SUPABASE_URL=$VITE_SUPABASE_URL
+ENV VITE_SUPABASE_ANON_KEY=$VITE_SUPABASE_ANON_KEY
+ENV VITE_WEBHOOK_URL=$VITE_WEBHOOK_URL
+
 # Copy package files
 COPY package*.json ./
 COPY bun.lockb* ./

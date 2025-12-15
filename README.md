@@ -4,6 +4,7 @@ AI-powered tool for generating interactive mathbook content with custom typograp
 
 ## Features
 
+- 🔐 **Supabase Authentication** - Secure user authentication with email/password
 - Upload PDF documents for processing
 - Custom Google Fonts selection
 - AI voice narration configuration
@@ -17,6 +18,27 @@ AI-powered tool for generating interactive mathbook content with custom typograp
 ```bash
 npm install
 ```
+
+### Authentication Setup
+
+This application uses Supabase for authentication. Follow these steps:
+
+1. **Create a Supabase project** at [supabase.com](https://supabase.com)
+2. **Get your API credentials** from Settings → API
+3. **Create a `.env` file** in the root directory:
+
+```env
+VITE_SUPABASE_URL=https://your-project-id.supabase.co
+VITE_SUPABASE_ANON_KEY=your-anon-key-here
+```
+
+4. **Configure authentication** in your Supabase dashboard:
+   - Enable Email provider in Authentication → Providers
+   - Set Site URL and Redirect URLs in Authentication → URL Configuration
+
+📚 **Detailed Setup Guide:** See [SUPABASE_SETUP.md](./SUPABASE_SETUP.md) for complete instructions
+
+📖 **Implementation Details:** See [AUTH_IMPLEMENTATION.md](./AUTH_IMPLEMENTATION.md) for technical documentation
 
 ### Configuration
 
@@ -59,6 +81,8 @@ npm run build
 
 ## Environment Variables
 
+- `VITE_SUPABASE_URL`: Your Supabase project URL (required for authentication)
+- `VITE_SUPABASE_ANON_KEY`: Your Supabase anonymous key (required for authentication)
 - `VITE_WEBHOOK_URL`: Permanent webhook URL (optional, overrides user settings)
 
 ## Docker Deployment
@@ -103,7 +127,11 @@ docker build -t mathbook-app .
 Or with build arguments:
 
 ```bash
-docker build --build-arg VITE_WEBHOOK_URL=https://your-webhook-url.com/webhook/... -t mathbook-app .
+docker build \
+  --build-arg VITE_SUPABASE_URL=https://your-project-id.supabase.co \
+  --build-arg VITE_SUPABASE_ANON_KEY=your-anon-key-here \
+  --build-arg VITE_WEBHOOK_URL=https://your-webhook-url.com/webhook/... \
+  -t mathbook-app .
 ```
 
 2. **Run the container:**
