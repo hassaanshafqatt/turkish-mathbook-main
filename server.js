@@ -5,6 +5,8 @@ import path from "path";
 import { fileURLToPath } from "url";
 import dotenv from "dotenv";
 import { createClient } from "@supabase/supabase-js";
+import rateLimit from "express-rate-limit";
+import helmet from "helmet";
 
 // Load environment variables
 dotenv.config();
@@ -41,9 +43,44 @@ if (SUPABASE_URL && SUPABASE_SERVICE_ROLE_KEY) {
   );
 }
 
+// Security Middleware
+app.use(
+  helmet({
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+        scriptSrc: ["'self'", "'unsafe-inline'"],
+        styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
+        fontSrc: ["'self'", "https://fonts.gstatic.com"],
+        imgSrc: ["'self'", "data:", "https:"],
+        connectSrc: ["'self'", "https://*.supabase.co"],
+      },
+    },
+    crossOriginEmbedderPolicy: false,
+  }),
+);
+
+// Rate limiting
+const apiLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // Limit each IP to 100 requests per windowMs
+  message: "Too many requests from this IP, please try again later.",
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 5, // Limit each IP to 5 requests per windowMs
+  message: "Too many authentication attempts, please try again later.",
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
 // Middleware
 app.use(cors());
-app.use(express.json());
+app.use(express.json({ limit: "10mb" })); // Limit request body size
+app.use(apiLimiter);
 
 // Serve static files from dist directory
 app.use(express.static(path.join(__dirname, "dist")));
@@ -63,13 +100,63 @@ if (!fs.existsSync(SETTINGS_FILE)) {
   fs.writeFileSync(SETTINGS_FILE, JSON.stringify(initialSettings, null, 2));
 }
 
+// Input validation helpers
+const validateEmail = (email) => {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email);
+};
+
+const sanitizeInput = (input) => {
+  if (typeof input !== "string") return input;
+  // Remove potential command injection characters
+  return input.replace(/[;&|`$(){}[\]<>]/g, "");
+};
+
+const validateRole = (role) => {
+  return ["owner", "admin", "user"].includes(role);
+};
+
+const validateUrl = (url) => {
+  try {
+    const parsed = new URL(url);
+    return parsed.protocol === "http:" || parsed.protocol === "https:";
+  } catch {
+    return false;
+  }
+};
+
+// Path validation to prevent directory traversal (React2Shell protection)
+const isPathSafe = (filePath) => {
+  // Resolve to absolute path
+  const resolvedPath = path.resolve(filePath);
+
+  // Ensure path is within DATA_DIR
+  return resolvedPath.startsWith(path.resolve(DATA_DIR));
+};
+
+// Safe file read with path validation
+const safeReadFile = (filePath) => {
+  if (!isPathSafe(filePath)) {
+    throw new Error("Invalid file path - potential path traversal detected");
+  }
+  return fs.readFileSync(filePath, "utf8");
+};
+
+// Safe file write with path validation
+const safeWriteFile = (filePath, data) => {
+  if (!isPathSafe(filePath)) {
+    throw new Error("Invalid file path - potential path traversal detected");
+  }
+  fs.writeFileSync(filePath, data);
+};
+
 // API Routes
 app.get("/api/settings", (req, res) => {
   try {
     if (!fs.existsSync(SETTINGS_FILE)) {
       return res.json({ webhooks: [], voices: [], language: "en" });
     }
-    const data = fs.readFileSync(SETTINGS_FILE, "utf8");
+    const data = safeReadFile(SETTINGS_FILE);
     res.json(JSON.parse(data));
   } catch (error) {
     console.error("Error reading settings:", error);
@@ -80,7 +167,52 @@ app.get("/api/settings", (req, res) => {
 app.post("/api/settings", (req, res) => {
   try {
     const newSettings = req.body; // Expects full settings object
-    fs.writeFileSync(SETTINGS_FILE, JSON.stringify(newSettings, null, 2));
+
+    // Validate settings structure
+    if (!newSettings || typeof newSettings !== "object") {
+      return res.status(400).json({ error: "Invalid settings format" });
+    }
+
+    // Validate webhooks
+    if (newSettings.webhooks) {
+      if (!Array.isArray(newSettings.webhooks)) {
+        return res.status(400).json({ error: "Webhooks must be an array" });
+      }
+
+      for (const webhook of newSettings.webhooks) {
+        if (!webhook.id || !webhook.name || !webhook.url) {
+          return res.status(400).json({ error: "Invalid webhook format" });
+        }
+        if (!validateUrl(webhook.url)) {
+          return res.status(400).json({ error: "Invalid webhook URL" });
+        }
+        // Sanitize webhook name
+        webhook.name = sanitizeInput(webhook.name);
+      }
+    }
+
+    // Validate voices
+    if (newSettings.voices) {
+      if (!Array.isArray(newSettings.voices)) {
+        return res.status(400).json({ error: "Voices must be an array" });
+      }
+
+      for (const voice of newSettings.voices) {
+        if (!voice.id || !voice.name) {
+          return res.status(400).json({ error: "Invalid voice format" });
+        }
+        // Sanitize voice name and id
+        voice.name = sanitizeInput(voice.name);
+        voice.id = sanitizeInput(voice.id);
+      }
+    }
+
+    // Validate language
+    if (newSettings.language && !["en", "tr"].includes(newSettings.language)) {
+      return res.status(400).json({ error: "Invalid language" });
+    }
+
+    safeWriteFile(SETTINGS_FILE, JSON.stringify(newSettings, null, 2));
     res.json({ success: true, settings: newSettings });
   } catch (error) {
     console.error("Error writing settings:", error);
@@ -101,8 +233,8 @@ app.get("/api/env", (req, res) => {
   }
 });
 
-// Admin API - Create User
-app.post("/api/admin/users", async (req, res) => {
+// Admin API - Create User (with rate limiting)
+app.post("/api/admin/users", authLimiter, async (req, res) => {
   try {
     if (!supabaseAdmin) {
       return res.status(503).json({
@@ -120,13 +252,28 @@ app.post("/api/admin/users", async (req, res) => {
       });
     }
 
+    // Validate email format
+    if (!validateEmail(email)) {
+      return res.status(400).json({
+        error: "Invalid email format",
+      });
+    }
+
+    // Validate password strength
     if (password.length < 6) {
       return res.status(400).json({
         error: "Password must be at least 6 characters",
       });
     }
 
-    if (!["owner", "admin", "user"].includes(role)) {
+    if (password.length > 128) {
+      return res.status(400).json({
+        error: "Password is too long",
+      });
+    }
+
+    // Validate role
+    if (!validateRole(role)) {
       return res.status(400).json({
         error: "Invalid role. Must be owner, admin, or user",
       });
@@ -185,8 +332,8 @@ app.post("/api/admin/users", async (req, res) => {
   }
 });
 
-// Admin API - Delete User
-app.delete("/api/admin/users/:userId", async (req, res) => {
+// Admin API - Delete User (with rate limiting)
+app.delete("/api/admin/users/:userId", authLimiter, async (req, res) => {
   try {
     if (!supabaseAdmin) {
       return res.status(503).json({
@@ -195,6 +342,15 @@ app.delete("/api/admin/users/:userId", async (req, res) => {
     }
 
     const { userId } = req.params;
+
+    // Validate userId format (UUID)
+    const uuidRegex =
+      /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+    if (!uuidRegex.test(userId)) {
+      return res.status(400).json({
+        error: "Invalid user ID format",
+      });
+    }
 
     // Delete user via Supabase Admin API
     const { error } = await supabaseAdmin.auth.admin.deleteUser(userId);
