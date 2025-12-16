@@ -3,10 +3,10 @@ import { getLanguage } from "@/components/SettingsDialog";
 const translations = {
   en: {
     // Main page
-    title: "MathBook Content Generator",
+    title: "Questioneer Content Generator",
     subtitle:
-      "Generate interactive mathbook content with custom typography and AI narration",
-    footer: "AI-Powered Math Education • Processed via n8n",
+      "Generate interactive educational content with custom typography and AI narration",
+    footer: "AI-Powered Education • Processed via n8n",
 
     // Settings
     settings: "Settings",
@@ -18,7 +18,8 @@ const translations = {
     // Webhook tab
     webhookUrl: "n8n Webhook URL",
     webhookPlaceholder: "https://your-n8n-instance.com/webhook/...",
-    webhookDescription: "n8n webhook endpoint for processing mathbook content",
+    webhookDescription:
+      "n8n webhook endpoint for processing educational content",
     saveWebhook: "Save Webhook",
     addNewWebhook: "Add New Webhook",
     webhookName: "Webhook Name (e.g. Production)",
@@ -56,7 +57,7 @@ const translations = {
     chooseVoice: "Choose a voice",
     noVoicesInSelector: "No voices configured. Please add voices in settings.",
     voiceDescription: "AI voice for explaining math concepts and narration",
-    generateButton: "Generate MathBook Content",
+    generateButton: "Generate Content",
     generating: "Generating Content...",
 
     // Animation Settings
@@ -162,7 +163,7 @@ const translations = {
     selectFontError: "Please enter a Font",
     selectVoiceError: "Please select a voice",
     configureWebhookError: "Please configure webhook URL in settings",
-    submitSuccess: "Mathbook generation request submitted successfully!",
+    submitSuccess: "Content generation request submitted successfully!",
     submitError: "Failed to submit request. Please try again.",
     webhookUrlError: "Please enter a webhook URL",
     webhookSaved: "Webhook saved",
@@ -173,8 +174,8 @@ const translations = {
 
     // Tooltips
     tooltipUploadPdf:
-      "Upload your PDF math document to generate interactive content",
-    tooltipFont: "Choose a Google Font for your mathbook text",
+      "Upload your PDF document to generate interactive content",
+    tooltipFont: "Choose a Google Font for your content text",
     tooltipVoice: "Select an AI voice for narrating mathematical concepts",
     tooltipBackgroundColor: "Choose a background color that suits your content",
     tooltipVoiceInstructions:
@@ -182,18 +183,17 @@ const translations = {
     tooltipHandAnimation:
       "Toggle hand-writing animation effects in the generated content",
     tooltipOptionsAnimation: "Toggle animation for answer options in questions",
-    tooltipGenerate:
-      "Submit your configuration to generate the mathbook content",
+    tooltipGenerate: "Submit your configuration to generate the content",
     tooltipSettings: "Configure webhooks, voices, and language preferences",
     tooltipUserMenu: "Access your account settings and admin panel",
     tooltipRefreshBooks: "Reload the list of uploaded books",
   },
   tr: {
     // Ana sayfa
-    title: "MathBook İçerik Oluşturucu",
+    title: "Questioneer İçerik Oluşturucu",
     subtitle:
-      "Özel tipografi ve yapay zeka anlatımıyla interaktif matematik kitabı içeriği oluşturun",
-    footer: "Yapay Zeka Destekli Matematik Eğitimi • n8n ile İşleniyor",
+      "Özel tipografi ve yapay zeka anlatımıyla interaktif eğitim içeriği oluşturun",
+    footer: "Yapay Zeka Destekli Eğitim • n8n ile İşleniyor",
 
     // Ayarlar
     settings: "Ayarlar",
@@ -247,7 +247,7 @@ const translations = {
       "Yapılandırılmış ses yok. Lütfen ayarlardan ses ekleyin.",
     voiceDescription:
       "Matematik kavramlarını açıklamak ve anlatım için yapay zeka sesi",
-    generateButton: "MathBook İçeriği Oluştur",
+    generateButton: "İçerik Oluştur",
     generating: "İçerik Oluşturuluyor...",
 
     // Animasyon Ayarları
@@ -366,7 +366,7 @@ const translations = {
     // Tooltips
     tooltipUploadPdf:
       "İnteraktif içerik oluşturmak için PDF matematik belgenizi yükleyin",
-    tooltipFont: "Matematik kitabınız için bir Google Font seçin",
+    tooltipFont: "İçeriğiniz için bir Google Font seçin",
     tooltipVoice:
       "Matematiksel kavramları anlatmak için bir yapay zeka sesi seçin",
     tooltipBackgroundColor: "İçeriğinize uygun bir arka plan rengi seçin",
@@ -376,8 +376,7 @@ const translations = {
       "Oluşturulan içerikte el yazısı animasyon efektlerini aç/kapat",
     tooltipOptionsAnimation:
       "Sorulardaki cevap seçenekleri için animasyonu aç/kapat",
-    tooltipGenerate:
-      "Matematik kitabı içeriğini oluşturmak için yapılandırmanızı gönderin",
+    tooltipGenerate: "İçeriği oluşturmak için yapılandırmanızı gönderin",
     tooltipSettings: "Webhook'ları, sesleri ve dil tercihlerini yapılandırın",
     tooltipUserMenu: "Hesap ayarlarınıza ve yönetici paneline erişin",
     tooltipRefreshBooks: "Yüklenen kitaplar listesini yeniden yükle",

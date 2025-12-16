@@ -1,6 +1,6 @@
 # Admin Panel Setup Guide
 
-This guide will help you set up the admin panel with user role management for the MathBook application.
+This guide will help you set up the admin panel with user role management for the Questioneer application.
 
 ## Table of Contents
 
@@ -17,7 +17,7 @@ This guide will help you set up the admin panel with user role management for th
 
 ## Overview
 
-The MathBook application now includes a comprehensive admin panel with:
+The Questioneer application now includes a comprehensive admin panel with:
 
 - **User Management**: Create, manage, and delete user accounts
 - **Role-Based Access Control**: Three-tier hierarchy (Owner, Admin, User)
@@ -54,7 +54,7 @@ The MathBook application now includes a comprehensive admin panel with:
 
 ### 👤 User (Basic Access)
 - Standard application access
-- Can generate mathbooks
+- Can generate content
 - Can view their uploaded books
 - Cannot access admin panel
 - Cannot manage other users
@@ -222,7 +222,7 @@ WHERE role = 'owner';
 
 The stats dashboard displays three key metrics:
 
-- **Total Books**: Number of mathbooks generated
+- **Total Books**: Number of books generated
 - **Total Questions**: Questions extracted across all books
 - **Success Rate**: Processing success percentage
 

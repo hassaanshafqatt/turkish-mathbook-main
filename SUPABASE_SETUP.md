@@ -12,7 +12,7 @@ This guide will help you set up Supabase authentication for the Turkish Math Boo
 1. Go to https://supabase.com and sign in
 2. Click "New Project"
 3. Fill in the project details:
-   - Project name: `turkish-mathbook` (or your preferred name)
+   - Project name: `questioneer` (or your preferred name)
    - Database password: Choose a strong password
    - Region: Select the closest region to your users
 4. Click "Create new project" and wait for it to initialize

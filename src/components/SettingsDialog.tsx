@@ -73,7 +73,7 @@ export const SettingsDialog = () => {
         // though ideally we'd use the settings state context.
         // For compatibility with useTranslation hook:
         if (data.language)
-          localStorage.setItem("mathbook_language", data.language);
+          localStorage.setItem("questioneer_language", data.language);
       }
     } catch (error) {
       console.error("Failed to fetch settings:", error);
@@ -101,7 +101,7 @@ export const SettingsDialog = () => {
 
       // Update local storage for language
       if (newSettings.language !== settings.language) {
-        localStorage.setItem("mathbook_language", newSettings.language);
+        localStorage.setItem("questioneer_language", newSettings.language);
         window.location.reload();
       }
 
@@ -424,7 +424,7 @@ export const SettingsDialog = () => {
 
 // Helper functions for backwards compatibility with existing code
 export const getLanguage = () => {
-  return localStorage.getItem("mathbook_language") || "en";
+  return localStorage.getItem("questioneer_language") || "en";
 };
 
 export const getConfiguredVoices = async (): Promise<Voice[]> => {

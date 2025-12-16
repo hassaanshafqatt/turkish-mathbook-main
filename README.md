@@ -1,6 +1,6 @@
-# MathBook Content Generator
+# Questioneer Content Generator
 
-AI-powered tool for generating interactive mathbook content with custom typography and voice narration.
+AI-powered tool for generating interactive educational content with custom typography and voice narration.
 
 ## Features
 
@@ -84,7 +84,7 @@ npm run build
 5. Select a background color (white, light blue, light yellow, or gray)
 6. (Optional) Add voice generation instructions to customize the AI narration
 7. Toggle animation settings as desired
-8. Click "Generate MathBook Content"
+8. Click "Generate Content"
 
 ### Form Data Sent to Webhook
 
@@ -159,7 +159,7 @@ docker-compose up -d
 1. **Build the Docker image:**
 
 ```bash
-docker build -t mathbook-app .
+docker build -t questioneer-app .
 ```
 
 Or with build arguments:
@@ -169,13 +169,13 @@ docker build \
   --build-arg VITE_SUPABASE_URL=https://your-project-id.supabase.co \
   --build-arg VITE_SUPABASE_ANON_KEY=your-anon-key-here \
   --build-arg VITE_WEBHOOK_URL=https://your-webhook-url.com/webhook/... \
-  -t mathbook-app .
+  -t questioneer-app .
 ```
 
 2. **Run the container:**
 
 ```bash
-docker run -d -p 7893:80 --name mathbook-app mathbook-app
+docker run -d -p 7893:80 --name questioneer-app questioneer-app
 ```
 
 ### Docker Commands

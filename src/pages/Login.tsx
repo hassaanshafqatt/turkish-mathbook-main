@@ -29,7 +29,7 @@ const Login = () => {
           <BookOpen className="w-8 h-8 text-primary-foreground" />
         </div>
         <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-3 tracking-tight">
-          MathBook Generator
+          Questioneer
         </h1>
         <p className="text-muted-foreground text-lg">Sign in to continue</p>
       </div>

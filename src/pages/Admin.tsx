@@ -22,8 +22,12 @@ const Admin = () => {
     return (
       <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5 flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-foreground mb-2">Access Denied</h1>
-          <p className="text-muted-foreground mb-6">You don't have permission to access this page.</p>
+          <h1 className="text-2xl font-bold text-foreground mb-2">
+            Access Denied
+          </h1>
+          <p className="text-muted-foreground mb-6">
+            You don't have permission to access this page.
+          </p>
           <Button onClick={() => navigate("/")}>
             <Home className="w-4 h-4 mr-2" />
             Go Home
@@ -46,7 +50,7 @@ const Admin = () => {
                 </div>
                 <div>
                   <h2 className="text-lg font-bold text-foreground tracking-tight">
-                    MathBook
+                    Questioneer
                   </h2>
                   <p className="text-xs text-muted-foreground">Admin Panel</p>
                 </div>

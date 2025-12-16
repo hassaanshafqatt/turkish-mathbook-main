@@ -1,6 +1,6 @@
 # Database Setup Guide
 
-This guide explains how to set up the Supabase database for the MathBook application with user roles and admin functionality.
+This guide explains how to set up the Supabase database for the Questioneer application with user roles and admin functionality.
 
 ## Prerequisites
 
