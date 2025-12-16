@@ -88,6 +88,7 @@ const translations = {
     noBooksUploaded: "No books uploaded yet",
     fetchBooksError: "Failed to load books. Please try again later.",
     noBooksWebhookConfigured: "Books webhook not configured in environment",
+    refreshBooks: "Refresh",
 
     // Quick Tips
     quickTips: "Quick Tips",
@@ -202,6 +203,7 @@ const translations = {
     fetchBooksError: "Kitaplar yüklenemedi. Lütfen daha sonra tekrar deneyin.",
     noBooksWebhookConfigured:
       "Kitap webhook'u ortam değişkenlerinde yapılandırılmamış",
+    refreshBooks: "Yenile",
 
     // Hızlı İpuçları
     quickTips: "Hızlı İpuçları",

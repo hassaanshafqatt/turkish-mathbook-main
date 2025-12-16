@@ -1,9 +1,10 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useTranslation } from "@/hooks/useTranslation";
 import { useAuth } from "@/contexts/AuthContext";
-import { BookOpen, Loader2, AlertCircle } from "lucide-react";
+import { BookOpen, Loader2, AlertCircle, RefreshCw } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 
 const API_URL = import.meta.env.DEV
   ? "http://localhost:7893/api/env"
@@ -36,50 +37,64 @@ export const UploadedBooks = () => {
     fetchEnvConfig();
   }, []);
 
-  useEffect(() => {
+  const fetchBooks = useCallback(async () => {
     if (!booksWebhookUrl) {
       return;
     }
 
-    const fetchBooks = async () => {
-      setIsLoading(true);
-      setError(null);
+    setIsLoading(true);
+    setError(null);
 
-      try {
-        const response = await fetch(booksWebhookUrl, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            email: user?.email || "",
-          }),
-        });
+    try {
+      const response = await fetch(booksWebhookUrl, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: user?.email || "",
+        }),
+      });
 
-        if (!response.ok) {
-          throw new Error("Failed to fetch books");
-        }
-
-        const data: BooksResponse = await response.json();
-        setBooks(data.unique || []);
-      } catch (err) {
-        console.error("Error fetching books:", err);
-        setError(t.fetchBooksError);
-      } finally {
-        setIsLoading(false);
+      if (!response.ok) {
+        throw new Error("Failed to fetch books");
       }
-    };
 
+      const data: BooksResponse = await response.json();
+      setBooks(data.unique || []);
+    } catch (err) {
+      console.error("Error fetching books:", err);
+      setError("Failed to load books. Please try again later.");
+    } finally {
+      setIsLoading(false);
+    }
+  }, [booksWebhookUrl, user]);
+
+  useEffect(() => {
     fetchBooks();
-  }, [booksWebhookUrl, user, t]);
+  }, [fetchBooks]);
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center gap-2">
-        <BookOpen className="w-5 h-5 text-primary" />
-        <h2 className="text-lg font-semibold text-foreground">
-          {t.uploadedBooksTitle}
-        </h2>
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <BookOpen className="w-5 h-5 text-primary" />
+          <h2 className="text-lg font-semibold text-foreground">
+            {t.uploadedBooksTitle}
+          </h2>
+        </div>
+        {booksWebhookUrl && (
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={fetchBooks}
+            disabled={isLoading}
+            className="gap-2"
+          >
+            <RefreshCw className={cn("w-4 h-4", isLoading && "animate-spin")} />
+            {t.refreshBooks}
+          </Button>
+        )}
       </div>
 
       {!booksWebhookUrl && (
