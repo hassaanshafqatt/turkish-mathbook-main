@@ -89,6 +89,13 @@ const translations = {
     fetchBooksError: "Failed to load books. Please try again later.",
     noBooksWebhookConfigured: "Books webhook not configured in environment",
 
+    // Quick Tips
+    quickTips: "Quick Tips",
+    quickTip1: "Choose fonts that are clear and readable",
+    quickTip2: "Select a voice that matches your audience",
+    quickTip3: "Background colors affect readability",
+    quickTip4: "Voice instructions help customize narration",
+
     // Toasts
     uploadPdfError: "Please upload a PDF file",
     selectFontError: "Please enter a Font",
@@ -195,6 +202,13 @@ const translations = {
     fetchBooksError: "Kitaplar yüklenemedi. Lütfen daha sonra tekrar deneyin.",
     noBooksWebhookConfigured:
       "Kitap webhook'u ortam değişkenlerinde yapılandırılmamış",
+
+    // Hızlı İpuçları
+    quickTips: "Hızlı İpuçları",
+    quickTip1: "Açık ve okunabilir fontlar seçin",
+    quickTip2: "Hedef kitlenize uygun bir ses seçin",
+    quickTip3: "Arka plan renkleri okunabilirliği etkiler",
+    quickTip4: "Ses talimatları anlatımı özelleştirmeye yardımcı olur",
 
     // Bildirimler
     uploadPdfError: "Lütfen bir PDF dosyası yükleyin",

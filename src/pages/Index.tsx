@@ -71,24 +71,24 @@ const Index = () => {
             <div className="bg-gradient-to-br from-primary/10 to-primary/5 backdrop-blur-sm rounded-2xl border border-primary/20 p-6">
               <h3 className="font-semibold text-foreground mb-2 flex items-center gap-2">
                 <Sparkles className="w-4 h-4 text-primary" />
-                Quick Tips
+                {t.quickTips}
               </h3>
               <ul className="text-sm text-muted-foreground space-y-2">
                 <li className="flex items-start gap-2">
                   <span className="text-primary mt-0.5">•</span>
-                  <span>Choose fonts that are clear and readable</span>
+                  <span>{t.quickTip1}</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-primary mt-0.5">•</span>
-                  <span>Select a voice that matches your audience</span>
+                  <span>{t.quickTip2}</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-primary mt-0.5">•</span>
-                  <span>Background colors affect readability</span>
+                  <span>{t.quickTip3}</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-primary mt-0.5">•</span>
-                  <span>Voice instructions help customize narration</span>
+                  <span>{t.quickTip4}</span>
                 </li>
               </ul>
             </div>
