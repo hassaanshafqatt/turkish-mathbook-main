@@ -15,6 +15,10 @@ import {
 // Use environment variable directly instead of API endpoint
 const BOOKS_WEBHOOK_URL = import.meta.env.VITE_BOOKS_WEBHOOK_URL || null;
 
+// Debug: Log the webhook URL (will be visible in browser console)
+console.log("VITE_BOOKS_WEBHOOK_URL:", import.meta.env.VITE_BOOKS_WEBHOOK_URL);
+console.log("BOOKS_WEBHOOK_URL:", BOOKS_WEBHOOK_URL);
+
 interface BooksResponse {
   unique: string[];
 }

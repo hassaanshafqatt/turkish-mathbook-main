@@ -137,7 +137,7 @@ export const SettingsDialog = () => {
 
       if (data) {
         setLanguage(data.language);
-        localStorage.setItem("questioneer_language", data.language);
+        localStorage.setItem("qlyra_language", data.language);
       }
     } catch (error) {
       console.error("Error fetching user preferences:", error);
@@ -322,7 +322,7 @@ export const SettingsDialog = () => {
       if (error) throw error;
 
       setLanguage(lang);
-      localStorage.setItem("questioneer_language", lang);
+      localStorage.setItem("qlyra_language", lang);
       toast.success(t.languageSaved);
 
       // Reload page to apply language change
@@ -591,7 +591,7 @@ export const SettingsDialog = () => {
 
 // Helper functions for backwards compatibility with existing code
 export const getLanguage = () => {
-  return localStorage.getItem("questioneer_language") || "en";
+  return localStorage.getItem("qlyra_language") || "en";
 };
 
 export const getConfiguredVoices = async (): Promise<Voice[]> => {

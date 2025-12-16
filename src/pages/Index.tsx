@@ -21,7 +21,7 @@ const Index = () => {
               </div>
               <div>
                 <h2 className="text-lg font-bold text-foreground tracking-tight">
-                  Questioneer
+                  Qlyra
                 </h2>
                 <p className="text-xs text-muted-foreground">AI Generator</p>
               </div>
@@ -103,7 +103,7 @@ const Index = () => {
             <Separator className="mb-4" />
             <p className="text-sm text-muted-foreground">{t.footer}</p>
             <p className="text-xs text-muted-foreground/70">
-              © {new Date().getFullYear()} Questioneer. All rights reserved.
+              © {new Date().getFullYear()} Qlyra. All rights reserved.
             </p>
           </div>
         </footer>

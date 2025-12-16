@@ -50,7 +50,7 @@ const Admin = () => {
                 </div>
                 <div>
                   <h2 className="text-lg font-bold text-foreground tracking-tight">
-                    Questioneer
+                    Qlyra
                   </h2>
                   <p className="text-xs text-muted-foreground">Admin Panel</p>
                 </div>

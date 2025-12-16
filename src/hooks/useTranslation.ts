@@ -3,7 +3,7 @@ import { getLanguage } from "@/components/SettingsDialog";
 const translations = {
   en: {
     // Main page
-    title: "Questioneer Content Generator",
+    title: "Qlyra Content Generator",
     subtitle:
       "Generate interactive educational content with custom typography and AI narration",
     footer: "AI-Powered Education • Processed via n8n",
@@ -192,7 +192,7 @@ const translations = {
   },
   tr: {
     // Ana sayfa
-    title: "Questioneer İçerik Oluşturucu",
+    title: "Qlyra İçerik Oluşturucu",
     subtitle:
       "Özel tipografi ve yapay zeka anlatımıyla interaktif eğitim içeriği oluşturun",
     footer: "Yapay Zeka Destekli Eğitim • n8n ile İşleniyor",
