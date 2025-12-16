@@ -18,6 +18,8 @@ const SETTINGS_FILE = path.join(DATA_DIR, "settings.json");
 
 // Books webhook URL from environment (read-only, not configurable via UI)
 const BOOKS_WEBHOOK_URL = process.env.BOOKS_WEBHOOK_URL;
+// Stats webhook URL from environment (read-only, not configurable via UI)
+const STATS_WEBHOOK_URL = process.env.STATS_WEBHOOK_URL;
 
 // Middleware
 app.use(cors());
@@ -71,6 +73,7 @@ app.get("/api/env", (req, res) => {
   try {
     res.json({
       booksWebhookUrl: BOOKS_WEBHOOK_URL || null,
+      statsWebhookUrl: STATS_WEBHOOK_URL || null,
     });
   } catch (error) {
     console.error("Error reading environment config:", error);
@@ -90,6 +93,13 @@ app.listen(PORT, () => {
   } else {
     console.log(
       "Books webhook URL not configured (set BOOKS_WEBHOOK_URL in .env)",
+    );
+  }
+  if (STATS_WEBHOOK_URL) {
+    console.log(`Stats webhook URL configured: ${STATS_WEBHOOK_URL}`);
+  } else {
+    console.log(
+      "Stats webhook URL not configured (set STATS_WEBHOOK_URL in .env)",
     );
   }
 });

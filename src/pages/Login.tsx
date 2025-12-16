@@ -16,22 +16,22 @@ const Login = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 to-slate-100">
-        <div className="animate-pulse text-slate-600">Loading...</div>
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background via-background to-primary/5">
+        <div className="animate-pulse text-muted-foreground">Loading...</div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 flex flex-col items-center justify-center px-4 py-12">
+    <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5 flex flex-col items-center justify-center px-4 py-12">
       <div className="text-center mb-8 animate-fade-in">
-        <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-500 to-purple-600 mb-6 shadow-xl">
-          <BookOpen className="w-8 h-8 text-white" />
+        <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-primary mb-6 shadow-xl">
+          <BookOpen className="w-8 h-8 text-primary-foreground" />
         </div>
-        <h1 className="text-4xl md:text-5xl font-bold text-slate-900 mb-3 tracking-tight">
+        <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-3 tracking-tight">
           MathBook Generator
         </h1>
-        <p className="text-slate-600 text-lg">Sign in to continue</p>
+        <p className="text-muted-foreground text-lg">Sign in to continue</p>
       </div>
       <div className="w-full max-w-md">
         <AuthForm />

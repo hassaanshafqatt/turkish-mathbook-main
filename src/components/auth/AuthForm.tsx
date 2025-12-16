@@ -11,7 +11,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+
 import { useToast } from "@/hooks/use-toast";
 import { Loader2 } from "lucide-react";
 
@@ -92,12 +92,12 @@ export const AuthForm = () => {
 
   if (forgotPassword) {
     return (
-      <Card className="w-full bg-white shadow-xl border-slate-200">
+      <Card className="w-full bg-card shadow-xl border-border">
         <CardHeader className="space-y-2">
-          <CardTitle className="text-2xl font-bold text-slate-900">
+          <CardTitle className="text-2xl font-bold text-foreground">
             Reset Password
           </CardTitle>
-          <CardDescription className="text-slate-600">
+          <CardDescription className="text-muted-foreground">
             Enter your email address and we'll send you a link to reset your
             password.
           </CardDescription>
@@ -107,7 +107,7 @@ export const AuthForm = () => {
             <div className="space-y-2">
               <Label
                 htmlFor="reset-email"
-                className="text-slate-900 font-medium"
+                className="text-foreground font-medium"
               >
                 Email
               </Label>
@@ -119,14 +119,14 @@ export const AuthForm = () => {
                 onChange={(e) => setEmail(e.target.value)}
                 required
                 disabled={loading}
-                className="h-11 border-slate-200 focus:border-blue-500 focus:ring-blue-500"
+                className="h-11"
               />
             </div>
           </CardContent>
           <CardFooter className="flex flex-col gap-3">
             <Button
               type="submit"
-              className="w-full h-11 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-semibold shadow-lg"
+              className="w-full h-11 bg-gradient-primary hover:opacity-90 transition-opacity text-primary-foreground font-semibold shadow-lg"
               disabled={loading}
             >
               {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
@@ -135,7 +135,7 @@ export const AuthForm = () => {
             <Button
               type="button"
               variant="ghost"
-              className="w-full text-slate-600 hover:text-slate-900"
+              className="w-full text-muted-foreground hover:text-foreground"
               onClick={() => setForgotPassword(false)}
               disabled={loading}
             >
@@ -148,148 +148,74 @@ export const AuthForm = () => {
   }
 
   return (
-    <Card className="w-full bg-white shadow-xl border-slate-200">
+    <Card className="w-full bg-card shadow-xl border-border">
       <CardHeader className="space-y-2 pb-6">
-        <CardTitle className="text-2xl font-bold text-slate-900">
+        <CardTitle className="text-2xl font-bold text-foreground">
           Welcome Back
         </CardTitle>
-        <CardDescription className="text-slate-600">
-          Sign in to your account or create a new one.
+        <CardDescription className="text-muted-foreground">
+          Sign in to your account to continue.
         </CardDescription>
       </CardHeader>
-      <Tabs defaultValue="signin" className="w-full">
-        <TabsList className="grid w-full grid-cols-2 bg-slate-100 p-1">
-          <TabsTrigger
-            value="signin"
-            className="data-[state=active]:bg-white data-[state=active]:text-slate-900 data-[state=active]:shadow-sm"
+      <form onSubmit={handleSignIn}>
+        <CardContent className="space-y-5 pt-6">
+          <div className="space-y-2">
+            <Label
+              htmlFor="signin-email"
+              className="text-foreground font-medium"
+            >
+              Email
+            </Label>
+            <Input
+              id="signin-email"
+              type="email"
+              placeholder="your.email@example.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              disabled={loading}
+              className="h-11"
+            />
+          </div>
+          <div className="space-y-2">
+            <Label
+              htmlFor="signin-password"
+              className="text-foreground font-medium"
+            >
+              Password
+            </Label>
+            <Input
+              id="signin-password"
+              type="password"
+              placeholder="••••••••"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              disabled={loading}
+              className="h-11"
+            />
+          </div>
+        </CardContent>
+        <CardFooter className="flex flex-col gap-3">
+          <Button
+            type="submit"
+            className="w-full h-11 bg-gradient-primary hover:opacity-90 transition-opacity text-primary-foreground font-semibold shadow-lg"
+            disabled={loading}
           >
+            {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
             Sign In
-          </TabsTrigger>
-          <TabsTrigger
-            value="signup"
-            className="data-[state=active]:bg-white data-[state=active]:text-slate-900 data-[state=active]:shadow-sm"
+          </Button>
+          <Button
+            type="button"
+            variant="link"
+            className="text-sm text-muted-foreground hover:text-primary"
+            onClick={() => setForgotPassword(true)}
+            disabled={loading}
           >
-            Sign Up
-          </TabsTrigger>
-        </TabsList>
-        <TabsContent value="signin">
-          <form onSubmit={handleSignIn}>
-            <CardContent className="space-y-5 pt-6">
-              <div className="space-y-2">
-                <Label
-                  htmlFor="signin-email"
-                  className="text-slate-900 font-medium"
-                >
-                  Email
-                </Label>
-                <Input
-                  id="signin-email"
-                  type="email"
-                  placeholder="your.email@example.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                  disabled={loading}
-                  className="h-11 border-slate-200 focus:border-blue-500 focus:ring-blue-500"
-                />
-              </div>
-              <div className="space-y-2">
-                <Label
-                  htmlFor="signin-password"
-                  className="text-slate-900 font-medium"
-                >
-                  Password
-                </Label>
-                <Input
-                  id="signin-password"
-                  type="password"
-                  placeholder="••••••••"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                  disabled={loading}
-                  className="h-11 border-slate-200 focus:border-blue-500 focus:ring-blue-500"
-                />
-              </div>
-            </CardContent>
-            <CardFooter className="flex flex-col gap-3">
-              <Button
-                type="submit"
-                className="w-full h-11 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-semibold shadow-lg"
-                disabled={loading}
-              >
-                {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                Sign In
-              </Button>
-              <Button
-                type="button"
-                variant="link"
-                className="text-sm text-slate-600 hover:text-blue-600"
-                onClick={() => setForgotPassword(true)}
-                disabled={loading}
-              >
-                Forgot password?
-              </Button>
-            </CardFooter>
-          </form>
-        </TabsContent>
-        <TabsContent value="signup">
-          <form onSubmit={handleSignUp}>
-            <CardContent className="space-y-5 pt-6">
-              <div className="space-y-2">
-                <Label
-                  htmlFor="signup-email"
-                  className="text-slate-900 font-medium"
-                >
-                  Email
-                </Label>
-                <Input
-                  id="signup-email"
-                  type="email"
-                  placeholder="your.email@example.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                  disabled={loading}
-                  className="h-11 border-slate-200 focus:border-blue-500 focus:ring-blue-500"
-                />
-              </div>
-              <div className="space-y-2">
-                <Label
-                  htmlFor="signup-password"
-                  className="text-slate-900 font-medium"
-                >
-                  Password
-                </Label>
-                <Input
-                  id="signup-password"
-                  type="password"
-                  placeholder="••••••••"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                  disabled={loading}
-                  minLength={6}
-                  className="h-11 border-slate-200 focus:border-blue-500 focus:ring-blue-500"
-                />
-                <p className="text-xs text-slate-500">
-                  Password must be at least 6 characters long
-                </p>
-              </div>
-            </CardContent>
-            <CardFooter>
-              <Button
-                type="submit"
-                className="w-full h-11 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-semibold shadow-lg"
-                disabled={loading}
-              >
-                {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                Sign Up
-              </Button>
-            </CardFooter>
-          </form>
-        </TabsContent>
-      </Tabs>
+            Forgot password?
+          </Button>
+        </CardFooter>
+      </form>
     </Card>
   );
 };

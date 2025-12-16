@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { FileUpload } from "./FileUpload";
 import { FontSelector } from "./FontSelector";
@@ -6,6 +6,7 @@ import { VoiceSelector } from "./VoiceSelector";
 import { BackgroundColorSelector } from "./BackgroundColorSelector";
 import { VoiceInstructions } from "./VoiceInstructions";
 import { useTranslation } from "@/hooks/useTranslation";
+import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
 import { Loader2, Send } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
@@ -28,6 +29,7 @@ export const ProcessingForm = () => {
   const [showOptionsAnimation, setShowOptionsAnimation] = useState(true);
 
   const t = useTranslation();
+  const { user } = useAuth();
 
   const getActiveWebhook = async () => {
     try {
@@ -81,6 +83,10 @@ export const ProcessingForm = () => {
       formData.append("backgroundColor", backgroundColor);
       if (voiceInstructions.trim()) {
         formData.append("voiceInstructions", voiceInstructions);
+      }
+      // Append user email
+      if (user?.email) {
+        formData.append("email", user.email);
       }
       // Append new toggle values
       formData.append("showHandAnimation", showHandAnimation.toString());
