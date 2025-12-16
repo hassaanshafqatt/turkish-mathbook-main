@@ -250,20 +250,9 @@ app.get("*", (req, res) => {
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
-  if (BOOKS_WEBHOOK_URL) {
-    console.log(`Books webhook URL configured: ${BOOKS_WEBHOOK_URL}`);
-  } else {
-    console.log(
-      "Books webhook URL not configured (set BOOKS_WEBHOOK_URL in .env)",
-    );
-  }
-  if (STATS_WEBHOOK_URL) {
-    console.log(`Stats webhook URL configured: ${STATS_WEBHOOK_URL}`);
-  } else {
-    console.log(
-      "Stats webhook URL not configured (set STATS_WEBHOOK_URL in .env)",
-    );
-  }
+  console.log(
+    "Books and Stats webhook URLs are now configured via VITE_ environment variables at build time",
+  );
   if (!SUPABASE_SERVICE_ROLE_KEY) {
     console.warn(
       "⚠️  SUPABASE_SERVICE_ROLE_KEY not configured - admin user creation disabled",
