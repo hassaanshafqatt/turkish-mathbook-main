@@ -26,6 +26,37 @@ This guide explains how to set up the Supabase database for the MathBook applica
 supabase db push
 ```
 
+### Important: Handling Errors During Setup
+
+#### Error 1: Infinite Recursion
+```
+{
+    "code": "42P17",
+    "message": "infinite recursion detected in policy for relation \"profiles\""
+}
+```
+
+**Solution:** Use the full reset script, then run the migration:
+1. Run `000_full_reset.sql`
+2. Run `001_add_roles.sql`
+
+#### Error 2: Cannot Drop Function (Dependency Error)
+```
+ERROR: cannot drop function handle_new_user() because other objects depend on it
+HINT: Use DROP ... CASCADE to drop the dependent objects too.
+```
+
+**Solution:** Use the full reset script which handles all dependencies:
+1. Run `000_full_reset.sql` (drops triggers before functions)
+2. Run `001_add_roles.sql`
+
+The migration uses `SECURITY DEFINER` functions to prevent infinite recursion in RLS policies.
+
+### Cleanup Scripts Available
+
+- **`000_cleanup.sql`**: Standard cleanup (drops policies, functions, triggers)
+- **`000_full_reset.sql`**: Complete reset with CASCADE (⚠️ deletes all profile data!)
+
 ## Post-Migration Steps
 
 ### 1. Set Your First Owner
@@ -116,6 +147,43 @@ User (basic access)
 | View own profile | ✅ | ✅ | ✅ |
 
 ## Troubleshooting
+
+### Infinite Recursion Error
+
+**Error message:**
+```
+infinite recursion detected in policy for relation "profiles"
+```
+
+**Solution:**
+1. Run the full reset: `000_full_reset.sql`
+2. Then run the migration: `001_add_roles.sql`
+
+The migration uses `SECURITY DEFINER` functions that avoid recursion.
+
+### Dependency Errors
+
+**Error message:**
+```
+cannot drop function X() because other objects depend on it
+```
+
+**Solution:**
+The `000_full_reset.sql` script handles this by:
+1. Dropping triggers first (before functions)
+2. Using CASCADE to handle any remaining dependencies
+3. Completely resetting the schema
+
+**Steps:**
+```sql
+-- 1. Run full reset (in SQL Editor)
+-- Copy and run: 000_full_reset.sql
+
+-- 2. Run main migration (in SQL Editor)
+-- Copy and run: 001_add_roles.sql
+```
+
+⚠️ **Warning:** Full reset deletes all profile data. Backup first if needed!
 
 ### Profile Not Created Automatically
 

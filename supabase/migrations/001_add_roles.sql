@@ -14,95 +14,92 @@ CREATE TABLE IF NOT EXISTS public.profiles (
 -- Enable Row Level Security
 ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
 
--- Create policies
+-- Create security definer functions to avoid infinite recursion
+CREATE OR REPLACE FUNCTION public.get_user_role(user_id UUID)
+RETURNS user_role
+LANGUAGE sql
+SECURITY DEFINER
+STABLE
+AS $$
+    SELECT role FROM public.profiles WHERE id = user_id;
+$$;
+
+CREATE OR REPLACE FUNCTION public.is_admin_or_owner(user_id UUID)
+RETURNS BOOLEAN
+LANGUAGE sql
+SECURITY DEFINER
+STABLE
+AS $$
+    SELECT EXISTS (
+        SELECT 1 FROM public.profiles
+        WHERE id = user_id
+        AND role IN ('admin', 'owner')
+    );
+$$;
+
+CREATE OR REPLACE FUNCTION public.is_owner(user_id UUID)
+RETURNS BOOLEAN
+LANGUAGE sql
+SECURITY DEFINER
+STABLE
+AS $$
+    SELECT EXISTS (
+        SELECT 1 FROM public.profiles
+        WHERE id = user_id
+        AND role = 'owner'
+    );
+$$;
+
+-- Create policies using the security definer functions
 -- Users can read their own profile
 CREATE POLICY "Users can read own profile"
     ON public.profiles
     FOR SELECT
     USING (auth.uid() = id);
 
--- Users can update their own profile (but not role)
+-- Admins and owners can read all profiles
+CREATE POLICY "Admins can read all profiles"
+    ON public.profiles
+    FOR SELECT
+    USING (public.is_admin_or_owner(auth.uid()));
+
+-- Users can update their own profile (but not their role)
 CREATE POLICY "Users can update own profile"
     ON public.profiles
     FOR UPDATE
     USING (auth.uid() = id)
     WITH CHECK (
         auth.uid() = id
-        AND role = (SELECT role FROM public.profiles WHERE id = auth.uid())
-    );
-
--- Admins and owners can read all profiles
-CREATE POLICY "Admins can read all profiles"
-    ON public.profiles
-    FOR SELECT
-    USING (
-        EXISTS (
-            SELECT 1 FROM public.profiles
-            WHERE id = auth.uid()
-            AND role IN ('admin', 'owner')
-        )
+        AND role = public.get_user_role(auth.uid())
     );
 
 -- Owners can update all profiles
 CREATE POLICY "Owners can update all profiles"
     ON public.profiles
     FOR UPDATE
-    USING (
-        EXISTS (
-            SELECT 1 FROM public.profiles
-            WHERE id = auth.uid()
-            AND role = 'owner'
-        )
-    );
+    USING (public.is_owner(auth.uid()));
 
--- Admins can update user profiles (not admin or owner)
-CREATE POLICY "Admins can update user profiles"
-    ON public.profiles
-    FOR UPDATE
-    USING (
-        EXISTS (
-            SELECT 1 FROM public.profiles
-            WHERE id = auth.uid()
-            AND role IN ('admin', 'owner')
-        )
-        AND role = 'user'
-    );
-
--- Admins can insert new profiles
+-- Admins can insert new profiles (when creating users)
 CREATE POLICY "Admins can insert profiles"
     ON public.profiles
     FOR INSERT
-    WITH CHECK (
-        EXISTS (
-            SELECT 1 FROM public.profiles
-            WHERE id = auth.uid()
-            AND role IN ('admin', 'owner')
-        )
-    );
+    WITH CHECK (public.is_admin_or_owner(auth.uid()));
 
 -- Owners can delete any profile (except themselves)
 CREATE POLICY "Owners can delete profiles"
     ON public.profiles
     FOR DELETE
     USING (
-        EXISTS (
-            SELECT 1 FROM public.profiles
-            WHERE id = auth.uid()
-            AND role = 'owner'
-        )
+        public.is_owner(auth.uid())
         AND id != auth.uid()
     );
 
--- Admins can delete user profiles
+-- Admins can delete user profiles (role = 'user')
 CREATE POLICY "Admins can delete user profiles"
     ON public.profiles
     FOR DELETE
     USING (
-        EXISTS (
-            SELECT 1 FROM public.profiles
-            WHERE id = auth.uid()
-            AND role IN ('admin', 'owner')
-        )
+        public.is_admin_or_owner(auth.uid())
         AND role = 'user'
     );
 
@@ -167,6 +164,11 @@ CREATE TRIGGER on_profiles_updated
 CREATE INDEX IF NOT EXISTS profiles_role_idx ON public.profiles(role);
 CREATE INDEX IF NOT EXISTS profiles_email_idx ON public.profiles(email);
 CREATE INDEX IF NOT EXISTS profiles_created_at_idx ON public.profiles(created_at DESC);
+
+-- Grant necessary permissions
+GRANT USAGE ON SCHEMA public TO postgres, anon, authenticated, service_role;
+GRANT ALL ON public.profiles TO postgres, service_role;
+GRANT SELECT, INSERT, UPDATE, DELETE ON public.profiles TO authenticated;
 
 -- Insert the first owner (change this email to your actual owner email)
 -- This will only work if the user already exists in auth.users

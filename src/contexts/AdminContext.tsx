@@ -1,7 +1,17 @@
-import { createContext, useContext, useState, useEffect, ReactNode } from "react";
+import {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  ReactNode,
+} from "react";
 import { useAuth } from "./AuthContext";
 import { supabase } from "@/lib/supabase";
 import { UserRole, UserProfile } from "@/types/admin";
+
+const API_URL = import.meta.env.DEV
+  ? "http://localhost:7893/api/admin"
+  : "/api/admin";
 
 interface AdminContextType {
   userRole: UserRole | null;
@@ -10,10 +20,20 @@ interface AdminContextType {
   loading: boolean;
   canManageUser: (targetRole: UserRole) => boolean;
   canKickUser: (targetRole: UserRole) => boolean;
-  createUser: (email: string, password: string, role: UserRole) => Promise<{ error: Error | null }>;
-  updateUserRole: (userId: string, newRole: UserRole) => Promise<{ error: Error | null }>;
+  createUser: (
+    email: string,
+    password: string,
+    role: UserRole,
+  ) => Promise<{ error: Error | null }>;
+  updateUserRole: (
+    userId: string,
+    newRole: UserRole,
+  ) => Promise<{ error: Error | null }>;
   deleteUser: (userId: string) => Promise<{ error: Error | null }>;
-  getAllUsers: () => Promise<{ users: UserProfile[] | null; error: Error | null }>;
+  getAllUsers: () => Promise<{
+    users: UserProfile[] | null;
+    error: Error | null;
+  }>;
 }
 
 const AdminContext = createContext<AdminContextType | undefined>(undefined);
@@ -77,41 +97,47 @@ export const AdminProvider = ({ children }: { children: ReactNode }) => {
   const createUser = async (
     email: string,
     password: string,
-    role: UserRole
+    role: UserRole,
   ): Promise<{ error: Error | null }> => {
     try {
       // Check if current user can create users
       if (!isAdmin) {
-        return { error: new Error("Unauthorized: Only admins can create users") };
+        return {
+          error: new Error("Unauthorized: Only admins can create users"),
+        };
       }
 
       // Check if current user can assign this role
       if (!canManageUser(role)) {
-        return { error: new Error(`Unauthorized: Cannot create user with role ${role}`) };
+        return {
+          error: new Error(
+            `Unauthorized: Cannot create user with role ${role}`,
+          ),
+        };
       }
 
-      // Create the user via Supabase Admin API (requires service role key)
-      // Note: This should ideally be done via a server-side function
-      const { data, error } = await supabase.auth.admin.createUser({
-        email,
-        password,
-        email_confirm: true,
+      // Get the current user's session token for authentication
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+      if (!session) {
+        return { error: new Error("No active session") };
+      }
+
+      // Create user via server-side API (uses service role key)
+      const response = await fetch(`${API_URL}/users`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${session.access_token}`,
+        },
+        body: JSON.stringify({ email, password, role }),
       });
 
-      if (error) {
-        return { error: new Error(error.message) };
-      }
+      const data = await response.json();
 
-      if (data.user) {
-        // Update the user's role in profiles table
-        const { error: profileError } = await supabase
-          .from("profiles")
-          .update({ role })
-          .eq("id", data.user.id);
-
-        if (profileError) {
-          return { error: new Error(profileError.message) };
-        }
+      if (!response.ok) {
+        return { error: new Error(data.error || "Failed to create user") };
       }
 
       return { error: null };
@@ -122,12 +148,14 @@ export const AdminProvider = ({ children }: { children: ReactNode }) => {
 
   const updateUserRole = async (
     userId: string,
-    newRole: UserRole
+    newRole: UserRole,
   ): Promise<{ error: Error | null }> => {
     try {
       // Check if current user can manage this role
       if (!canManageUser(newRole)) {
-        return { error: new Error(`Unauthorized: Cannot assign role ${newRole}`) };
+        return {
+          error: new Error(`Unauthorized: Cannot assign role ${newRole}`),
+        };
       }
 
       // Get target user's current role to verify permissions
@@ -142,7 +170,9 @@ export const AdminProvider = ({ children }: { children: ReactNode }) => {
       }
 
       if (!canManageUser(targetUser.role)) {
-        return { error: new Error("Unauthorized: Cannot modify this user's role") };
+        return {
+          error: new Error("Unauthorized: Cannot modify this user's role"),
+        };
       }
 
       // Update the role
@@ -161,7 +191,9 @@ export const AdminProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const deleteUser = async (userId: string): Promise<{ error: Error | null }> => {
+  const deleteUser = async (
+    userId: string,
+  ): Promise<{ error: Error | null }> => {
     try {
       // Get target user's role to verify permissions
       const { data: targetUser, error: fetchError } = await supabase
@@ -178,11 +210,27 @@ export const AdminProvider = ({ children }: { children: ReactNode }) => {
         return { error: new Error("Unauthorized: Cannot kick this user") };
       }
 
-      // Delete the user via Supabase Admin API
-      const { error } = await supabase.auth.admin.deleteUser(userId);
+      // Get the current user's session token for authentication
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+      if (!session) {
+        return { error: new Error("No active session") };
+      }
 
-      if (error) {
-        return { error: new Error(error.message) };
+      // Delete user via server-side API
+      const response = await fetch(`${API_URL}/users/${userId}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${session.access_token}`,
+        },
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        return { error: new Error(data.error || "Failed to delete user") };
       }
 
       return { error: null };
@@ -197,7 +245,10 @@ export const AdminProvider = ({ children }: { children: ReactNode }) => {
   }> => {
     try {
       if (!isAdmin) {
-        return { users: null, error: new Error("Unauthorized: Admin access required") };
+        return {
+          users: null,
+          error: new Error("Unauthorized: Admin access required"),
+        };
       }
 
       const { data, error } = await supabase
@@ -228,7 +279,9 @@ export const AdminProvider = ({ children }: { children: ReactNode }) => {
     getAllUsers,
   };
 
-  return <AdminContext.Provider value={value}>{children}</AdminContext.Provider>;
+  return (
+    <AdminContext.Provider value={value}>{children}</AdminContext.Provider>
+  );
 };
 
 export const useAdmin = () => {

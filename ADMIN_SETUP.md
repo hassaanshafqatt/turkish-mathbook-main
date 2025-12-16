@@ -134,6 +134,9 @@ Add the following environment variables to your `.env` file:
 VITE_SUPABASE_URL=your_supabase_url
 VITE_SUPABASE_ANON_KEY=your_anon_key
 
+# Server-side Admin Operations (Required for user creation)
+SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
+
 # Webhooks
 BOOKS_WEBHOOK_URL=https://your-n8n-instance.com/webhook/books
 STATS_WEBHOOK_URL=https://your-n8n-instance.com/webhook/stats
@@ -141,6 +144,12 @@ STATS_WEBHOOK_URL=https://your-n8n-instance.com/webhook/stats
 # Server Port (optional)
 PORT=7893
 ```
+
+**Important:** The `SUPABASE_SERVICE_ROLE_KEY` is required for admin user creation:
+1. Go to Supabase Dashboard → **Settings** → **API**
+2. Copy the `service_role` key (NOT the `anon` key)
+3. Add it to your `.env` file
+4. Restart the server after adding it
 
 ### Stats Webhook Setup
 
@@ -272,13 +281,14 @@ The user will receive an email confirmation (if configured in Supabase).
 
 2. **Service Role Key Security**
    - Never commit `.env` files to version control
-   - Store service role key securely
+   - Store service role key securely on server only (not in client code)
    - Rotate keys periodically
+   - The service role key is now used server-side only for security
 
 3. **Production Setup**
-   - Consider implementing server-side user creation API
-   - Avoid using service role key in client-side code
-   - Implement rate limiting for admin actions
+   - User creation now uses server-side API (secure!)
+   - Service role key never exposed to client
+   - Implement rate limiting for admin actions in production
 
 4. **Regular Audits**
    - Periodically review user roles
@@ -292,10 +302,12 @@ The user will receive an email confirmation (if configured in Supabase).
 
 ### 🚨 Important Notes
 
-- **Service Role Key**: Required for admins to create users. This key bypasses RLS, so handle with extreme care.
+- **Service Role Key**: Required on the server for admins to create users. Add `SUPABASE_SERVICE_ROLE_KEY` to `.env` file.
+- **Server-Side Security**: User creation now uses server-side API, so the service role key is never exposed to the client.
 - **First Owner**: Must be set manually via SQL. The application cannot auto-promote users to owner.
 - **Self-Deletion**: Owners cannot delete their own account through the UI (prevents lockout).
 - **Role Changes**: Take effect immediately but may require re-login for full effect.
+- **Restart Required**: Always restart the server after adding/changing environment variables.
 
 ---
 
@@ -322,21 +334,36 @@ UPDATE public.profiles SET role = 'admin' WHERE email = 'user@example.com';
 curl https://your-stats-webhook-url.com
 ```
 
-### Problem: Cannot Create Users
+### Problem: Cannot Create Users / "User Not Allowed"
 
 **Possible causes:**
 
-1. **Service role key not configured**
-   - Verify `VITE_SUPABASE_ANON_KEY` is set to service role key
-   - Check Supabase Dashboard → Settings → API
+1. **Service role key not configured on server**
+   - Add `SUPABASE_SERVICE_ROLE_KEY` to `.env` file
+   - Get the key from Supabase Dashboard → Settings → API → `service_role` key
+   - **Must restart server** after adding the key
 
-2. **Insufficient permissions**
+2. **Server not using service role key**
+   - Check server logs for "Supabase admin client initialized"
+   - If you see a warning about service role key, it's not configured
+   - Restart the server after configuring
+
+3. **Insufficient permissions**
    - Verify you're logged in as admin or owner
-   - Check RLS policies are properly set up
+   - Check your role in the database
 
-3. **Email already exists**
+4. **Email already exists**
    - User with that email already exists
    - Try a different email address
+
+**Fix:**
+```bash
+# 1. Add to .env file:
+SUPABASE_SERVICE_ROLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+
+# 2. Restart server:
+npm run dev
+```
 
 ### Problem: Profile Not Created on Signup
 
@@ -515,7 +542,8 @@ WHERE tablename = 'profiles';
 ### Environment Variables Checklist
 
 - [ ] `VITE_SUPABASE_URL` - Your Supabase project URL
-- [ ] `VITE_SUPABASE_ANON_KEY` - Service role key (for user creation)
+- [ ] `VITE_SUPABASE_ANON_KEY` - Public anon key (for client authentication)
+- [ ] `SUPABASE_SERVICE_ROLE_KEY` - Service role key (server-side, for user creation)
 - [ ] `BOOKS_WEBHOOK_URL` - Webhook for user's books
 - [ ] `STATS_WEBHOOK_URL` - Webhook for statistics
 - [ ] `PORT` - Server port (default: 7893)
