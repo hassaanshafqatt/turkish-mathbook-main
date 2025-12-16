@@ -71,43 +71,12 @@ export const UploadedBooks = () => {
   }, [booksWebhookUrl, user]);
 
   useEffect(() => {
-    if (!booksWebhookUrl || !user) {
-      return;
+    // Fetch books when webhook URL becomes available (only once)
+    if (booksWebhookUrl && user) {
+      fetchBooks();
     }
-
-    // Only fetch once on mount when webhook URL is available
-    setIsLoading(true);
-    setError(null);
-
-    const fetchInitialBooks = async () => {
-      try {
-        const response = await fetch(booksWebhookUrl, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            email: user.email || "",
-          }),
-        });
-
-        if (!response.ok) {
-          throw new Error("Failed to fetch books");
-        }
-
-        const data: BooksResponse = await response.json();
-        setBooks(data.unique || []);
-      } catch (err) {
-        console.error("Error fetching books:", err);
-        setError("Failed to load books. Please try again later.");
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchInitialBooks();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []); // Empty dependency array - only run once on mount
+  }, [booksWebhookUrl]); // Only trigger when webhook URL is set
 
   return (
     <div className="space-y-4">
