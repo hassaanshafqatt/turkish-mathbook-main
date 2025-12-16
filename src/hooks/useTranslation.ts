@@ -4,16 +4,17 @@ const translations = {
   en: {
     // Main page
     title: "MathBook Content Generator",
-    subtitle: "Generate interactive mathbook content with custom typography and AI narration",
+    subtitle:
+      "Generate interactive mathbook content with custom typography and AI narration",
     footer: "AI-Powered Math Education • Processed via n8n",
-    
+
     // Settings
     settings: "Settings",
     settingsDescription: "Configure your application settings",
     webhook: "Webhook",
     voices: "Voices",
     language: "Language",
-    
+
     // Webhook tab
     webhookUrl: "n8n Webhook URL",
     webhookPlaceholder: "https://your-n8n-instance.com/webhook/...",
@@ -28,19 +29,20 @@ const translations = {
     activeWebhook: "Active",
     setActive: "Set Active",
     deleteWebhook: "Delete",
-    
+
     // Voices tab
     voiceIdPlaceholder: "Voice ID (e.g., 9BWtsMINqrJLrRacOk9x)",
     voiceNamePlaceholder: "Voice Name (e.g., Aria)",
     addVoice: "Add Voice",
-    noVoicesConfigured: "No voices configured. Add voices to see them in the selector.",
-    
+    noVoicesConfigured:
+      "No voices configured. Add voices to see them in the selector.",
+
     // Language tab
     selectLanguage: "Select Language",
     english: "English",
     turkish: "Türkçe",
     languageDescription: "Application language will be changed",
-    
+
     // Form
     uploadLabel: "Upload PDF Document",
     dragDropText: "Drag and drop a PDF file here, or click to select",
@@ -56,14 +58,37 @@ const translations = {
     voiceDescription: "AI voice for explaining math concepts and narration",
     generateButton: "Generate MathBook Content",
     generating: "Generating Content...",
-    
+
     // Animation Settings
     animationSettings: "Animation Settings",
     showHandAnimation: "Show Hand Animation",
     showHandAnimationDesc: "Display hand writing animation",
     showOptionsAnimation: "Show Options Animation",
     showOptionsAnimationDesc: "Animate the appearance of options",
-    
+
+    // Background Color
+    backgroundColorLabel: "Background Color",
+    backgroundColorDescription: "Select the background color for your content",
+    selectColor: "Select color",
+    color_white: "White",
+    color_light_blue: "Light Blue",
+    color_light_yellow: "Light Yellow",
+    color_gray: "Gray",
+
+    // Voice Instructions
+    voiceInstructionsLabel: "Voice Generation Instructions",
+    voiceInstructionsPlaceholder:
+      "Enter any specific instructions for voice generation (e.g., tone, pacing, emphasis)...",
+    voiceInstructionsDescription:
+      "Optional instructions to guide the AI voice narration",
+    optional: "Optional",
+
+    // Uploaded Books
+    uploadedBooksTitle: "Your Uploaded Books",
+    noBooksUploaded: "No books uploaded yet",
+    fetchBooksError: "Failed to load books. Please try again later.",
+    noBooksWebhookConfigured: "Books webhook not configured in environment",
+
     // Toasts
     uploadPdfError: "Please upload a PDF file",
     selectFontError: "Please enter a Font",
@@ -81,20 +106,22 @@ const translations = {
   tr: {
     // Ana sayfa
     title: "MathBook İçerik Oluşturucu",
-    subtitle: "Özel tipografi ve yapay zeka anlatımıyla interaktif matematik kitabı içeriği oluşturun",
+    subtitle:
+      "Özel tipografi ve yapay zeka anlatımıyla interaktif matematik kitabı içeriği oluşturun",
     footer: "Yapay Zeka Destekli Matematik Eğitimi • n8n ile İşleniyor",
-    
+
     // Ayarlar
     settings: "Ayarlar",
     settingsDescription: "Uygulama ayarlarınızı yapılandırın",
     webhook: "Webhook",
     voices: "Sesler",
     language: "Dil",
-    
+
     // Webhook sekmesi
     webhookUrl: "n8n Webhook URL",
     webhookPlaceholder: "https://your-n8n-instance.com/webhook/...",
-    webhookDescription: "Matematik kitabı içeriğini işlemek için n8n webhook adresi",
+    webhookDescription:
+      "Matematik kitabı içeriğini işlemek için n8n webhook adresi",
     saveWebhook: "Webhook'u Kaydet",
     addNewWebhook: "Yeni Webhook Ekle",
     webhookName: "Webhook Adı (örn. Üretim)",
@@ -105,22 +132,24 @@ const translations = {
     activeWebhook: "Aktif",
     setActive: "Aktif Yap",
     deleteWebhook: "Sil",
-    
+
     // Sesler sekmesi
     voiceIdPlaceholder: "Ses ID (örn: 9BWtsMINqrJLrRacOk9x)",
     voiceNamePlaceholder: "Ses Adı (örn: Aria)",
     addVoice: "Ses Ekle",
-    noVoicesConfigured: "Yapılandırılmış ses yok. Seçicide görmek için sesler ekleyin.",
-    
+    noVoicesConfigured:
+      "Yapılandırılmış ses yok. Seçicide görmek için sesler ekleyin.",
+
     // Dil sekmesi
     selectLanguage: "Dil Seçin",
     english: "English",
     turkish: "Türkçe",
     languageDescription: "Uygulama dili değiştirilecek",
-    
+
     // Form
     uploadLabel: "PDF Belgesi Yükle",
-    dragDropText: "Bir PDF dosyasını buraya sürükleyip bırakın veya seçmek için tıklayın",
+    dragDropText:
+      "Bir PDF dosyasını buraya sürükleyip bırakın veya seçmek için tıklayın",
     selectedFile: "Seçilen dosya:",
     removeFile: "Kaldır",
     fontLabel: "Font Seç",
@@ -129,18 +158,44 @@ const translations = {
     loadingFonts: "Fontlar yükleniyor...",
     voiceLabel: "Anlatım Sesi Seç",
     chooseVoice: "Bir ses seçin",
-    noVoicesInSelector: "Yapılandırılmış ses yok. Lütfen ayarlardan ses ekleyin.",
-    voiceDescription: "Matematik kavramlarını açıklamak ve anlatım için yapay zeka sesi",
+    noVoicesInSelector:
+      "Yapılandırılmış ses yok. Lütfen ayarlardan ses ekleyin.",
+    voiceDescription:
+      "Matematik kavramlarını açıklamak ve anlatım için yapay zeka sesi",
     generateButton: "MathBook İçeriği Oluştur",
     generating: "İçerik Oluşturuluyor...",
-    
+
     // Animasyon Ayarları
     animationSettings: "Animasyon Ayarları",
     showHandAnimation: "El Animasyonunu Göster",
     showHandAnimationDesc: "El yazısı animasyonunu göster",
     showOptionsAnimation: "Seçenek Animasyonunu Göster",
     showOptionsAnimationDesc: "Seçeneklerin görünüm animasyonu",
-    
+
+    // Arka Plan Rengi
+    backgroundColorLabel: "Arka Plan Rengi",
+    backgroundColorDescription: "İçeriğiniz için arka plan rengini seçin",
+    selectColor: "Renk seç",
+    color_white: "Beyaz",
+    color_light_blue: "Açık Mavi",
+    color_light_yellow: "Açık Sarı",
+    color_gray: "Gri",
+
+    // Ses Talimatları
+    voiceInstructionsLabel: "Ses Oluşturma Talimatları",
+    voiceInstructionsPlaceholder:
+      "Ses oluşturma için özel talimatlar girin (örn: ton, hız, vurgu)...",
+    voiceInstructionsDescription:
+      "Yapay zeka ses anlatımını yönlendirmek için isteğe bağlı talimatlar",
+    optional: "İsteğe Bağlı",
+
+    // Yüklenen Kitaplar
+    uploadedBooksTitle: "Yüklediğiniz Kitaplar",
+    noBooksUploaded: "Henüz kitap yüklenmemiş",
+    fetchBooksError: "Kitaplar yüklenemedi. Lütfen daha sonra tekrar deneyin.",
+    noBooksWebhookConfigured:
+      "Kitap webhook'u ortam değişkenlerinde yapılandırılmamış",
+
     // Bildirimler
     uploadPdfError: "Lütfen bir PDF dosyası yükleyin",
     selectFontError: "Lütfen bir Font girin",

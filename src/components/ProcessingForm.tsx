@@ -3,18 +3,24 @@ import { Button } from "@/components/ui/button";
 import { FileUpload } from "./FileUpload";
 import { FontSelector } from "./FontSelector";
 import { VoiceSelector } from "./VoiceSelector";
+import { BackgroundColorSelector } from "./BackgroundColorSelector";
+import { VoiceInstructions } from "./VoiceInstructions";
 import { useTranslation } from "@/hooks/useTranslation";
 import { toast } from "sonner";
 import { Loader2, Send } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 
-const API_URL = import.meta.env.DEV ? 'http://localhost:7893/api/settings' : '/api/settings';
+const API_URL = import.meta.env.DEV
+  ? "http://localhost:7893/api/settings"
+  : "/api/settings";
 
 export const ProcessingForm = () => {
   const [pdfFile, setPdfFile] = useState<File | null>(null);
   const [googleFont, setGoogleFont] = useState("");
   const [voiceId, setVoiceId] = useState("");
+  const [backgroundColor, setBackgroundColor] = useState("white");
+  const [voiceInstructions, setVoiceInstructions] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   // New Toggles
@@ -28,7 +34,9 @@ export const ProcessingForm = () => {
       const response = await fetch(API_URL);
       if (!response.ok) return null;
       const data = await response.json();
-      const active = data.webhooks?.find((w: any) => w.active);
+      const active = data.webhooks?.find(
+        (w: { active: boolean; url: string }) => w.active,
+      );
       return active ? active.url : null;
     } catch (e) {
       console.error("Error fetching settings:", e);
@@ -70,6 +78,10 @@ export const ProcessingForm = () => {
       formData.append("pdf", pdfFile);
       formData.append("googleFont", googleFont);
       formData.append("voiceId", voiceId);
+      formData.append("backgroundColor", backgroundColor);
+      if (voiceInstructions.trim()) {
+        formData.append("voiceInstructions", voiceInstructions);
+      }
       // Append new toggle values
       formData.append("showHandAnimation", showHandAnimation.toString());
       formData.append("showOptionsAnimation", showOptionsAnimation.toString());
@@ -89,6 +101,8 @@ export const ProcessingForm = () => {
       setPdfFile(null);
       setGoogleFont("");
       setVoiceId("");
+      setBackgroundColor("white");
+      setVoiceInstructions("");
     } catch (error) {
       console.error("Submission error:", error);
       toast.error(t.submitError);
@@ -105,14 +119,31 @@ export const ProcessingForm = () => {
 
       <VoiceSelector value={voiceId} onValueChange={setVoiceId} />
 
+      <BackgroundColorSelector
+        value={backgroundColor}
+        onValueChange={setBackgroundColor}
+      />
+
+      <VoiceInstructions
+        value={voiceInstructions}
+        onValueChange={setVoiceInstructions}
+      />
+
       {/* Animation Toggles */}
       <div className="space-y-4 border p-4 rounded-lg bg-card/50">
-        <h3 className="font-medium text-sm text-foreground mb-2">{t.animationSettings}</h3>
+        <h3 className="font-medium text-sm text-foreground mb-2">
+          {t.animationSettings}
+        </h3>
 
         <div className="flex items-center justify-between space-x-2">
-          <Label htmlFor="hand-animation" className="flex flex-col space-y-1 cursor-pointer">
+          <Label
+            htmlFor="hand-animation"
+            className="flex flex-col space-y-1 cursor-pointer"
+          >
             <span>{t.showHandAnimation}</span>
-            <span className="font-normal text-xs text-muted-foreground">{t.showHandAnimationDesc}</span>
+            <span className="font-normal text-xs text-muted-foreground">
+              {t.showHandAnimationDesc}
+            </span>
           </Label>
           <Switch
             id="hand-animation"
@@ -122,9 +153,14 @@ export const ProcessingForm = () => {
         </div>
 
         <div className="flex items-center justify-between space-x-2">
-          <Label htmlFor="options-animation" className="flex flex-col space-y-1 cursor-pointer">
+          <Label
+            htmlFor="options-animation"
+            className="flex flex-col space-y-1 cursor-pointer"
+          >
             <span>{t.showOptionsAnimation}</span>
-            <span className="font-normal text-xs text-muted-foreground">{t.showOptionsAnimationDesc}</span>
+            <span className="font-normal text-xs text-muted-foreground">
+              {t.showOptionsAnimationDesc}
+            </span>
           </Label>
           <Switch
             id="options-animation"

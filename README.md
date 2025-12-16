@@ -5,11 +5,15 @@ AI-powered tool for generating interactive mathbook content with custom typograp
 ## Features
 
 - 🔐 **Supabase Authentication** - Secure user authentication with email/password
-- Upload PDF documents for processing
-- Custom Google Fonts selection
-- AI voice narration configuration
-- Multi-language support (English/Turkish)
-- n8n webhook integration
+- 📄 **PDF Upload** - Upload PDF documents for processing
+- 🎨 **Custom Fonts** - Google Fonts selection with live preview
+- 🎤 **AI Voice Narration** - Configure ElevenLabs voices with custom instructions
+- 🎨 **Background Colors** - Choose from 4 predefined colors (white, light blue, light yellow, gray)
+- 📝 **Voice Instructions** - Optional field for customizing AI narration tone and style
+- 📚 **Uploaded Books View** - See your previously uploaded books at a glance
+- ✨ **Animation Controls** - Toggle hand and options animations
+- 🌐 **Multi-language Support** - Full English/Turkish translation
+- 🔗 **n8n Webhook Integration** - Flexible webhook configuration
 
 ## Setup
 
@@ -69,7 +73,7 @@ npm run build
 
 ## Usage
 
-1. Click the settings icon (bottom-left) to configure:
+1. Click the settings icon to configure:
    - **Webhook**: Set your n8n webhook URL (if not set via environment variable)
    - **Voices**: Add AI voices for narration
    - **Language**: Choose between English and Turkish
@@ -77,13 +81,47 @@ npm run build
 2. Upload a PDF document
 3. Select a Google Font
 4. Choose a narration voice
-5. Click "Generate MathBook Content"
+5. Select a background color (white, light blue, light yellow, or gray)
+6. (Optional) Add voice generation instructions to customize the AI narration
+7. Toggle animation settings as desired
+8. Click "Generate MathBook Content"
+
+### Form Data Sent to Webhook
+
+When submitting, the following data is sent:
+- `pdf`: PDF file
+- `googleFont`: Font name
+- `voiceId`: ElevenLabs voice ID
+- `backgroundColor`: Color name (white, light-blue, light-yellow, gray)
+- `voiceInstructions`: Optional custom instructions for voice generation
+- `showHandAnimation`: Boolean (true/false)
+- `showOptionsAnimation`: Boolean (true/false)
+
+### Uploaded Books
+
+If `BOOKS_WEBHOOK_URL` is configured in your `.env` file, a sidebar section will display your uploaded books. This webhook should return:
+
+```json
+{
+  "books": [
+    {
+      "id": "unique-id",
+      "name": "Book Name",
+      "uploadedAt": "2024-01-15T10:30:00Z"
+    }
+  ]
+}
+```
+
+**Note:** This webhook URL can only be set via environment variables for security reasons, not through the UI.
 
 ## Environment Variables
 
 - `VITE_SUPABASE_URL`: Your Supabase project URL (required for authentication)
 - `VITE_SUPABASE_ANON_KEY`: Your Supabase anonymous key (required for authentication)
 - `VITE_WEBHOOK_URL`: Permanent webhook URL (optional, overrides user settings)
+- `BOOKS_WEBHOOK_URL`: Webhook URL for fetching uploaded books list (optional, server-side only)
+- `PORT`: Server port (optional, defaults to 7893)
 
 ## Docker Deployment
 
