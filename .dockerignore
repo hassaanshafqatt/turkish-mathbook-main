@@ -36,9 +36,9 @@ Dockerfile
 .dockerignore
 docker-compose.yml
 
-# Documentation
-README.md
-*.md
+# Documentation (keep security docs)
+!SECURITY.md
+!CVE-2025-55182-ANALYSIS.md
 
 # Testing
 coverage
@@ -47,4 +47,3 @@ coverage
 # Misc
 .cache
 .temp
-

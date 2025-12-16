@@ -18,7 +18,7 @@ COPY package*.json ./
 COPY bun.lockb* ./
 
 # Install dependencies (including devDependencies for build)
-RUN npm ci
+RUN npm install --legacy-peer-deps
 
 # Copy source code
 COPY . .
@@ -35,13 +35,14 @@ WORKDIR /app
 COPY package*.json ./
 
 # Install ONLY production dependencies (express, cors, etc.)
-RUN npm ci --only=production
+RUN npm install --only=production --legacy-peer-deps
 
 # Copy built frontend from builder
 COPY --from=builder /app/dist ./dist
 
-# Copy server code
+# Copy server code and security module
 COPY server.js .
+COPY server ./server
 
 # Create data directory
 RUN mkdir -p data

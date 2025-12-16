@@ -175,7 +175,7 @@ docker build \
 2. **Run the container:**
 
 ```bash
-docker run -d -p 7893:80 --name questioneer-app questioneer-app
+docker run -d -p 7893:7893 --name questioneer-app questioneer-app
 ```
 
 ### Docker Commands
