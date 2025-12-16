@@ -53,12 +53,10 @@ export const UserMenu = () => {
           </div>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuItem disabled>
-          <User className="mr-2 h-4 w-4" />
-          <span>Profile</span>
-        </DropdownMenuItem>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={handleSignOut} className="text-destructive focus:text-destructive">
+        <DropdownMenuItem
+          onClick={handleSignOut}
+          className="text-destructive focus:text-destructive"
+        >
           <LogOut className="mr-2 h-4 w-4" />
           <span>Sign Out</span>
         </DropdownMenuItem>

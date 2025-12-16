@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useTranslation } from "@/hooks/useTranslation";
+import { useAuth } from "@/contexts/AuthContext";
 import { BookOpen, Loader2, AlertCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Card } from "@/components/ui/card";
@@ -8,17 +9,16 @@ const API_URL = import.meta.env.DEV
   ? "http://localhost:7893/api/env"
   : "/api/env";
 
-interface Book {
-  id: string;
-  name: string;
-  uploadedAt?: string;
+interface BooksResponse {
+  unique: string[];
 }
 
 export const UploadedBooks = () => {
-  const [books, setBooks] = useState<Book[]>([]);
+  const [books, setBooks] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [booksWebhookUrl, setBooksWebhookUrl] = useState<string | null>(null);
+  const { user } = useAuth();
   const t = useTranslation();
 
   useEffect(() => {
@@ -47,18 +47,21 @@ export const UploadedBooks = () => {
 
       try {
         const response = await fetch(booksWebhookUrl, {
-          method: "GET",
+          method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
+          body: JSON.stringify({
+            email: user?.email || "",
+          }),
         });
 
         if (!response.ok) {
           throw new Error("Failed to fetch books");
         }
 
-        const data = await response.json();
-        setBooks(data.books || []);
+        const data: BooksResponse = await response.json();
+        setBooks(data.unique || []);
       } catch (err) {
         console.error("Error fetching books:", err);
         setError(t.fetchBooksError);
@@ -68,7 +71,7 @@ export const UploadedBooks = () => {
     };
 
     fetchBooks();
-  }, [booksWebhookUrl, t]);
+  }, [booksWebhookUrl, user, t]);
 
   return (
     <div className="space-y-4">
@@ -106,9 +109,9 @@ export const UploadedBooks = () => {
 
       {booksWebhookUrl && !isLoading && !error && books.length > 0 && (
         <div className="grid grid-cols-1 gap-3 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
-          {books.map((book, index) => (
+          {books.map((bookId, index) => (
             <Card
-              key={book.id || index}
+              key={bookId}
               className={cn(
                 "p-4 bg-card hover:bg-accent/50 transition-colors duration-200",
                 "border border-border hover:border-primary/30",
@@ -122,13 +125,8 @@ export const UploadedBooks = () => {
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-medium text-foreground truncate">
-                    {book.name}
+                    {bookId}
                   </p>
-                  {book.uploadedAt && (
-                    <p className="text-xs text-muted-foreground">
-                      {new Date(book.uploadedAt).toLocaleDateString()}
-                    </p>
-                  )}
                 </div>
               </div>
             </Card>
