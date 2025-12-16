@@ -35,8 +35,10 @@ const translations = {
     voiceIdPlaceholder: "Voice ID (e.g., 9BWtsMINqrJLrRacOk9x)",
     voiceNamePlaceholder: "Voice Name (e.g., Aria)",
     addVoice: "Add Voice",
-    noVoicesConfigured:
-      "No voices configured. Add voices to see them in the selector.",
+    noVoicesConfigured: "No voices configured. Contact an admin to add voices.",
+    voicesAdminOnly: "Only admins and owners can manage voices",
+    voicesReadOnly:
+      "You can view available voices but cannot add or remove them",
 
     // Language tab
     selectLanguage: "Select Language",
@@ -222,7 +224,10 @@ const translations = {
     voiceNamePlaceholder: "Ses Adı (örn: Aria)",
     addVoice: "Ses Ekle",
     noVoicesConfigured:
-      "Yapılandırılmış ses yok. Seçicide görmek için sesler ekleyin.",
+      "Yapılandırılmış ses yok. Ses eklemek için bir yöneticiye başvurun.",
+    voicesAdminOnly: "Sadece yöneticiler ve sahipler sesleri yönetebilir",
+    voicesReadOnly:
+      "Mevcut sesleri görüntüleyebilirsiniz ancak ekleyemez veya kaldıramazsınız",
 
     // Dil sekmesi
     selectLanguage: "Dil Seçin",

@@ -1,37 +1,34 @@
 import { useState, useEffect } from "react";
 import { useAdmin } from "@/contexts/AdminContext";
 import { Stats, StatsResponse } from "@/types/admin";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { BookOpen, FileQuestion, TrendingUp, Users, Loader2, AlertCircle } from "lucide-react";
+import {
+  BookOpen,
+  FileQuestion,
+  TrendingUp,
+  Users,
+  Loader2,
+  AlertCircle,
+} from "lucide-react";
 import { UserManagement } from "./UserManagement";
 import { CreateUserDialog } from "./CreateUserDialog";
 
-const API_URL = import.meta.env.DEV
-  ? "http://localhost:7893/api/env"
-  : "/api/env";
+// Use environment variable directly instead of API endpoint
+const STATS_WEBHOOK_URL = import.meta.env.VITE_STATS_WEBHOOK_URL || null;
 
 export const AdminPanel = () => {
   const { isAdmin, isOwner } = useAdmin();
   const [stats, setStats] = useState<Stats | null>(null);
   const [statsLoading, setStatsLoading] = useState(false);
   const [statsError, setStatsError] = useState<string | null>(null);
-  const [statsWebhookUrl, setStatsWebhookUrl] = useState<string | null>(null);
-
-  useEffect(() => {
-    const fetchEnvConfig = async () => {
-      try {
-        const response = await fetch(API_URL);
-        if (!response.ok) return;
-        const data = await response.json();
-        setStatsWebhookUrl(data.statsWebhookUrl);
-      } catch (err) {
-        console.error("Error fetching env config:", err);
-      }
-    };
-
-    fetchEnvConfig();
-  }, []);
+  const [statsWebhookUrl] = useState<string | null>(STATS_WEBHOOK_URL);
 
   const fetchStats = async () => {
     if (!statsWebhookUrl) {
@@ -117,7 +114,8 @@ export const AdminPanel = () => {
               Statistics Not Configured
             </CardTitle>
             <CardDescription>
-              Stats webhook not configured in environment variables. Set STATS_WEBHOOK_URL in .env to enable statistics.
+              Stats webhook not configured in environment variables. Set
+              STATS_WEBHOOK_URL in .env to enable statistics.
             </CardDescription>
           </CardHeader>
         </Card>
@@ -134,7 +132,9 @@ export const AdminPanel = () => {
           <CardHeader>
             <div className="flex items-center gap-2">
               <AlertCircle className="w-5 h-5 text-destructive" />
-              <CardTitle className="text-destructive">Error Loading Statistics</CardTitle>
+              <CardTitle className="text-destructive">
+                Error Loading Statistics
+              </CardTitle>
             </div>
             <CardDescription className="text-destructive/80">
               {statsError}
@@ -213,9 +213,7 @@ export const AdminPanel = () => {
         <TabsContent value="users" className="space-y-4">
           <div className="flex items-center justify-between">
             <div>
-              <h2 className="text-xl font-semibold text-foreground">
-                Users
-              </h2>
+              <h2 className="text-xl font-semibold text-foreground">Users</h2>
               <p className="text-sm text-muted-foreground">
                 Manage user accounts and roles
               </p>

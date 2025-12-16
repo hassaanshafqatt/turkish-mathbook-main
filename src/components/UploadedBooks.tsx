@@ -12,9 +12,8 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 
-const API_URL = import.meta.env.DEV
-  ? "http://localhost:7893/api/env"
-  : "/api/env";
+// Use environment variable directly instead of API endpoint
+const BOOKS_WEBHOOK_URL = import.meta.env.VITE_BOOKS_WEBHOOK_URL || null;
 
 interface BooksResponse {
   unique: string[];
@@ -24,24 +23,9 @@ export const UploadedBooks = () => {
   const [books, setBooks] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [booksWebhookUrl, setBooksWebhookUrl] = useState<string | null>(null);
+  const [booksWebhookUrl] = useState<string | null>(BOOKS_WEBHOOK_URL);
   const { user } = useAuth();
   const t = useTranslation();
-
-  useEffect(() => {
-    const fetchEnvConfig = async () => {
-      try {
-        const response = await fetch(API_URL);
-        if (!response.ok) return;
-        const data = await response.json();
-        setBooksWebhookUrl(data.booksWebhookUrl);
-      } catch (err) {
-        console.error("Error fetching env config:", err);
-      }
-    };
-
-    fetchEnvConfig();
-  }, []);
 
   const fetchBooks = useCallback(async () => {
     if (!booksWebhookUrl) {

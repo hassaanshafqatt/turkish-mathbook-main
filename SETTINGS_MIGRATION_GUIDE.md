@@ -84,8 +84,9 @@ All tables have RLS enabled with the following policies:
 - Only admins and owners can SELECT, INSERT, UPDATE, DELETE
 
 **Voices:**
-- All authenticated users can SELECT
-- Only admins and owners can INSERT, UPDATE, DELETE
+- All authenticated users can SELECT (read voices)
+- Only admins and owners can INSERT, UPDATE, DELETE (manage voices)
+- **Note**: If you want regular users to add voices, see "Allowing Users to Add Voices" section below
 
 **User Preferences:**
 - Users can only SELECT, INSERT, UPDATE, DELETE their own preferences
@@ -159,13 +160,87 @@ rm data/settings.json
 
 - **Language Setting**: Now per-user instead of global
 - **Voice Selection**: Can view all available voices (no change in UX)
+- **Voice Management**: Can view voices but **cannot add/delete** them (admin/owner only)
 - **Webhook Tab**: No longer visible in settings (admin/owner only)
 
 ### For Admin/Owner Users
 
 - **Webhook Management**: Same UI, now stored in database
-- **Voice Management**: Same UI, now stored in database
+- **Voice Management**: Can add, edit, and delete voices for all users
 - **User Preferences**: Can manage webhooks and voices system-wide
+
+## Allowing Users to Add Voices (Optional)
+
+By default, only admins and owners can add voices to maintain quality control. If you want to allow all users to add voices:
+
+### 1. Update RLS Policies
+
+```sql
+-- Allow all authenticated users to insert voices
+DROP POLICY IF EXISTS "Only admins and owners can insert voices" ON public.voices;
+
+CREATE POLICY "All authenticated users can insert voices"
+    ON public.voices
+    FOR INSERT
+    WITH CHECK (auth.uid() IS NOT NULL);
+
+-- Users can only delete their own voices
+DROP POLICY IF EXISTS "Only admins and owners can delete voices" ON public.voices;
+
+CREATE POLICY "Users can delete own voices"
+    ON public.voices
+    FOR DELETE
+    USING (created_by = auth.uid() OR public.is_admin_or_owner(auth.uid()));
+```
+
+### 2. Update Frontend Component
+
+Edit `src/components/SettingsDialog.tsx`:
+
+```typescript
+// Remove the isAdminOrOwner check from voice management section
+// Change line ~480 from:
+{isAdminOrOwner && (
+  <>
+    // voice add form
+  </>
+)}
+
+// To:
+<>
+  // voice add form
+</>
+
+// And update the delete button visibility (line ~533)
+// Change from:
+{isAdminOrOwner && (
+  <Button onClick={() => handleDeleteVoice(voice.id)}>
+    <Trash2 />
+  </Button>
+)}
+
+// To (show delete only for own voices or if admin):
+{(voice.created_by === user?.id || isAdminOrOwner) && (
+  <Button onClick={() => handleDeleteVoice(voice.id)}>
+    <Trash2 />
+  </Button>
+)}
+```
+
+### 3. Considerations
+
+**Pros:**
+- Users can customize their voice selection
+- More flexible for user preferences
+- Users feel more in control
+
+**Cons:**
+- May lead to duplicate voices
+- Harder to maintain voice quality
+- Potential for confusion with many similar voices
+
+**Recommended Approach:**
+Keep the default (admin-only) unless you have a specific need for user-managed voices.
 
 ## API Changes
 
@@ -330,11 +405,13 @@ DROP TABLE IF EXISTS public.webhooks CASCADE;
 
 1. **Per-User Settings**: Each user can have their own language preference
 2. **Better Security**: Webhooks protected by RLS, only accessible to admins
-3. **Audit Trail**: Track who created each webhook and voice
-4. **Scalability**: Database-backed system scales better than file storage
-5. **Real-time**: Changes are immediately visible across all sessions
-6. **Backup**: Automatic backups with Supabase (if enabled)
-7. **Multi-instance**: Multiple server instances can share the same settings
+3. **Role-Based Access**: Proper separation between admin and user capabilities
+4. **Audit Trail**: Track who created each webhook and voice
+5. **Scalability**: Database-backed system scales better than file storage
+6. **Real-time**: Changes are immediately visible across all sessions
+7. **Backup**: Automatic backups with Supabase (if enabled)
+8. **Multi-instance**: Multiple server instances can share the same settings
+9. **No File System Dependency**: Safer, no path traversal vulnerabilities
 
 ## Next Steps
 
@@ -346,6 +423,8 @@ DROP TABLE IF EXISTS public.webhooks CASCADE;
 - [ ] Monitor for any issues
 - [ ] Update team documentation
 - [ ] Train team on new per-user settings
+- [ ] Decide on voice management permissions (admin-only vs all-users)
+- [ ] Clean up old data/settings.json file after successful migration
 
 ## Support
 

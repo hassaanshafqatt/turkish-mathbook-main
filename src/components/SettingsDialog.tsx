@@ -477,6 +477,13 @@ export const SettingsDialog = () => {
               className="space-y-4 flex-1 overflow-y-auto p-1"
             >
               <div className="space-y-4">
+                {!isAdminOrOwner && (
+                  <div className="p-4 bg-muted/50 rounded-lg border border-border">
+                    <p className="text-sm text-muted-foreground">
+                      {t.voicesReadOnly}
+                    </p>
+                  </div>
+                )}
                 {isAdminOrOwner && (
                   <>
                     <div className="grid grid-cols-2 gap-3">

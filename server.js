@@ -1,6 +1,5 @@
 import express from "express";
 import cors from "cors";
-import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 import dotenv from "dotenv";
@@ -16,8 +15,6 @@ const __dirname = path.dirname(__filename);
 
 const app = express();
 const PORT = process.env.PORT || 7893;
-const DATA_DIR = path.join(__dirname, "data");
-const SETTINGS_FILE = path.join(DATA_DIR, "settings.json");
 
 // Books webhook URL from environment (read-only, not configurable via UI)
 const BOOKS_WEBHOOK_URL = process.env.BOOKS_WEBHOOK_URL;
@@ -90,21 +87,6 @@ app.use(apiLimiter);
 // Serve static files from dist directory
 app.use(express.static(path.join(__dirname, "dist")));
 
-// Ensure data directory exists
-if (!fs.existsSync(DATA_DIR)) {
-  fs.mkdirSync(DATA_DIR, { recursive: true });
-}
-
-// Initialize settings file if it doesn't exist
-if (!fs.existsSync(SETTINGS_FILE)) {
-  const initialSettings = {
-    webhooks: [], // Array of { id: string, name: string, url: string, active: boolean }
-    voices: [], // Array of { id: string, name: string }
-    language: "en",
-  };
-  fs.writeFileSync(SETTINGS_FILE, JSON.stringify(initialSettings, null, 2));
-}
-
 // Input validation helpers
 const validateEmail = (email) => {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -129,114 +111,6 @@ const validateUrl = (url) => {
     return false;
   }
 };
-
-// Path validation to prevent directory traversal (React2Shell protection)
-const isPathSafe = (filePath) => {
-  // Resolve to absolute path
-  const resolvedPath = path.resolve(filePath);
-
-  // Ensure path is within DATA_DIR
-  return resolvedPath.startsWith(path.resolve(DATA_DIR));
-};
-
-// Safe file read with path validation
-const safeReadFile = (filePath) => {
-  if (!isPathSafe(filePath)) {
-    throw new Error("Invalid file path - potential path traversal detected");
-  }
-  return fs.readFileSync(filePath, "utf8");
-};
-
-// Safe file write with path validation
-const safeWriteFile = (filePath, data) => {
-  if (!isPathSafe(filePath)) {
-    throw new Error("Invalid file path - potential path traversal detected");
-  }
-  fs.writeFileSync(filePath, data);
-};
-
-// API Routes
-app.get("/api/settings", (req, res) => {
-  try {
-    if (!fs.existsSync(SETTINGS_FILE)) {
-      return res.json({ webhooks: [], voices: [], language: "en" });
-    }
-    const data = safeReadFile(SETTINGS_FILE);
-    res.json(JSON.parse(data));
-  } catch (error) {
-    console.error("Error reading settings:", error);
-    res.status(500).json({ error: "Failed to read settings" });
-  }
-});
-
-app.post("/api/settings", (req, res) => {
-  try {
-    const newSettings = req.body; // Expects full settings object
-
-    // Validate settings structure
-    if (!newSettings || typeof newSettings !== "object") {
-      return res.status(400).json({ error: "Invalid settings format" });
-    }
-
-    // Validate webhooks
-    if (newSettings.webhooks) {
-      if (!Array.isArray(newSettings.webhooks)) {
-        return res.status(400).json({ error: "Webhooks must be an array" });
-      }
-
-      for (const webhook of newSettings.webhooks) {
-        if (!webhook.id || !webhook.name || !webhook.url) {
-          return res.status(400).json({ error: "Invalid webhook format" });
-        }
-        if (!validateUrl(webhook.url)) {
-          return res.status(400).json({ error: "Invalid webhook URL" });
-        }
-        // Sanitize webhook name
-        webhook.name = sanitizeInput(webhook.name);
-      }
-    }
-
-    // Validate voices
-    if (newSettings.voices) {
-      if (!Array.isArray(newSettings.voices)) {
-        return res.status(400).json({ error: "Voices must be an array" });
-      }
-
-      for (const voice of newSettings.voices) {
-        if (!voice.id || !voice.name) {
-          return res.status(400).json({ error: "Invalid voice format" });
-        }
-        // Sanitize voice name and id
-        voice.name = sanitizeInput(voice.name);
-        voice.id = sanitizeInput(voice.id);
-      }
-    }
-
-    // Validate language
-    if (newSettings.language && !["en", "tr"].includes(newSettings.language)) {
-      return res.status(400).json({ error: "Invalid language" });
-    }
-
-    safeWriteFile(SETTINGS_FILE, JSON.stringify(newSettings, null, 2));
-    res.json({ success: true, settings: newSettings });
-  } catch (error) {
-    console.error("Error writing settings:", error);
-    res.status(500).json({ error: "Failed to save settings" });
-  }
-});
-
-// Environment configuration endpoint (read-only)
-app.get("/api/env", (req, res) => {
-  try {
-    res.json({
-      booksWebhookUrl: BOOKS_WEBHOOK_URL || null,
-      statsWebhookUrl: STATS_WEBHOOK_URL || null,
-    });
-  } catch (error) {
-    console.error("Error reading environment config:", error);
-    res.status(500).json({ error: "Failed to read environment configuration" });
-  }
-});
 
 // Admin API - Create User (with rate limiting)
 app.post("/api/admin/users", authLimiter, async (req, res) => {
