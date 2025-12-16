@@ -17,10 +17,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-
-const API_URL = import.meta.env.DEV
-  ? "http://localhost:7893/api/settings"
-  : "/api/settings";
+import { supabase } from "@/lib/supabase";
 
 export const ProcessingForm = () => {
   const [pdfFile, setPdfFile] = useState<File | null>(null);
@@ -39,15 +36,21 @@ export const ProcessingForm = () => {
 
   const getActiveWebhook = async () => {
     try {
-      const response = await fetch(API_URL);
-      if (!response.ok) return null;
-      const data = await response.json();
-      const active = data.webhooks?.find(
-        (w: { active: boolean; url: string }) => w.active,
-      );
-      return active ? active.url : null;
+      const { data, error } = await supabase
+        .from("webhooks")
+        .select("url")
+        .eq("active", true)
+        .single();
+
+      if (error && error.code !== "PGRST116") {
+        // PGRST116 = no rows returned
+        console.error("Error fetching active webhook:", error);
+        return null;
+      }
+
+      return data?.url || null;
     } catch (e) {
-      console.error("Error fetching settings:", e);
+      console.error("Error fetching webhook:", e);
       return null;
     }
   };

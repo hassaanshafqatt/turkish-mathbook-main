@@ -8,13 +8,12 @@ import {
 } from "@/components/ui/select";
 import { useTranslation } from "@/hooks/useTranslation";
 import { Voice } from "./SettingsDialog";
+import { supabase } from "@/lib/supabase";
 
 interface VoiceSelectorProps {
   value: string;
   onValueChange: (value: string) => void;
 }
-
-const API_URL = import.meta.env.DEV ? 'http://localhost:7893/api/settings' : '/api/settings';
 
 export const VoiceSelector = ({ value, onValueChange }: VoiceSelectorProps) => {
   const [voices, setVoices] = useState<Voice[]>([]);
@@ -23,12 +22,14 @@ export const VoiceSelector = ({ value, onValueChange }: VoiceSelectorProps) => {
   useEffect(() => {
     const fetchVoices = async () => {
       try {
-        const response = await fetch(API_URL);
-        if (response.ok) {
-          const data = await response.json();
-          if (data.voices && Array.isArray(data.voices)) {
-            setVoices(data.voices);
-          }
+        const { data, error } = await supabase
+          .from("voices")
+          .select("*")
+          .order("created_at", { ascending: false });
+
+        if (error) throw error;
+        if (data && Array.isArray(data)) {
+          setVoices(data);
         }
       } catch (error) {
         console.error("Failed to fetch voices:", error);
@@ -58,7 +59,7 @@ export const VoiceSelector = ({ value, onValueChange }: VoiceSelectorProps) => {
             {voices.map((voice) => (
               <SelectItem
                 key={voice.id}
-                value={voice.id}
+                value={voice.voice_id}
                 className="cursor-pointer hover:bg-accent focus:bg-accent"
               >
                 {voice.name}
@@ -67,9 +68,7 @@ export const VoiceSelector = ({ value, onValueChange }: VoiceSelectorProps) => {
           </SelectContent>
         </Select>
       )}
-      <p className="text-xs text-muted-foreground">
-        {t.voiceDescription}
-      </p>
+      <p className="text-xs text-muted-foreground">{t.voiceDescription}</p>
     </div>
   );
 };
