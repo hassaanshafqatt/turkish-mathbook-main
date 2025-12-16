@@ -11,6 +11,9 @@ services:
         VITE_SUPABASE_ANON_KEY: ${VITE_SUPABASE_ANON_KEY:-}
         # Optional: Set permanent webhook URL at build time
         VITE_WEBHOOK_URL: ${VITE_WEBHOOK_URL:-}
+        # Books and Stats webhook URLs (for frontend)
+        VITE_BOOKS_WEBHOOK_URL: ${VITE_BOOKS_WEBHOOK_URL:-}
+        VITE_STATS_WEBHOOK_URL: ${VITE_STATS_WEBHOOK_URL:-}
     container_name: mathbook-app
     env_file:
       - .env

@@ -16,11 +16,6 @@ const __dirname = path.dirname(__filename);
 const app = express();
 const PORT = process.env.PORT || 7893;
 
-// Books webhook URL from environment (read-only, not configurable via UI)
-const BOOKS_WEBHOOK_URL = process.env.BOOKS_WEBHOOK_URL;
-// Stats webhook URL from environment (read-only, not configurable via UI)
-const STATS_WEBHOOK_URL = process.env.STATS_WEBHOOK_URL;
-
 // Supabase Admin Client (using service role key for admin operations)
 const SUPABASE_URL = process.env.VITE_SUPABASE_URL;
 const SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
