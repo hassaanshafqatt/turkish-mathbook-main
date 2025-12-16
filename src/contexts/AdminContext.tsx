@@ -107,6 +107,15 @@ export const AdminProvider = ({ children }: { children: ReactNode }) => {
         };
       }
 
+      // Prevent creating owner accounts via admin panel (security measure)
+      if (role === "owner") {
+        return {
+          error: new Error(
+            "Owner accounts can only be created manually via SQL for security reasons",
+          ),
+        };
+      }
+
       // Check if current user can assign this role
       if (!canManageUser(role)) {
         return {
@@ -151,6 +160,15 @@ export const AdminProvider = ({ children }: { children: ReactNode }) => {
     newRole: UserRole,
   ): Promise<{ error: Error | null }> => {
     try {
+      // Prevent setting owner role via admin panel (security measure)
+      if (newRole === "owner") {
+        return {
+          error: new Error(
+            "Owner role can only be set manually via SQL for security reasons",
+          ),
+        };
+      }
+
       // Check if current user can manage this role
       if (!canManageUser(newRole)) {
         return {

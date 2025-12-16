@@ -152,6 +152,10 @@ const translations = {
     backToHome: "Back to Home",
     goHome: "Go Home",
     accessDeniedPage: "You don't have permission to access this page.",
+    ownerRoleRestriction:
+      "Owner accounts can only be created manually via SQL for security reasons",
+    ownerRoleNote:
+      "Note: Owner role can only be set manually via SQL for security",
 
     // Toasts
     uploadPdfError: "Please upload a PDF file",
@@ -323,6 +327,10 @@ const translations = {
     backToHome: "Ana Sayfaya Dön",
     goHome: "Ana Sayfaya Git",
     accessDeniedPage: "Bu sayfaya erişim izniniz yok.",
+    ownerRoleRestriction:
+      "Sahip hesapları güvenlik nedeniyle yalnızca SQL ile manuel olarak oluşturulabilir",
+    ownerRoleNote:
+      "Not: Sahip rolü güvenlik için yalnızca SQL ile manuel olarak ayarlanabilir",
 
     // Bildirimler
     uploadPdfError: "Lütfen bir PDF dosyası yükleyin",

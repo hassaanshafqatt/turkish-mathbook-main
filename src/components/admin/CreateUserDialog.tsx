@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useAdmin } from "@/contexts/AdminContext";
 import { UserRole } from "@/types/admin";
+import { useTranslation } from "@/hooks/useTranslation";
 import {
   Dialog,
   DialogContent,
@@ -20,11 +21,18 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { UserPlus, Loader2, Shield, User as UserIcon, Crown } from "lucide-react";
+import {
+  UserPlus,
+  Loader2,
+  Shield,
+  User as UserIcon,
+  Crown,
+} from "lucide-react";
 import { toast } from "sonner";
 
 export const CreateUserDialog = () => {
   const { createUser, isOwner, userRole } = useAdmin();
+  const t = useTranslation();
   const [open, setOpen] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -121,14 +129,6 @@ export const CreateUserDialog = () => {
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  {isOwner && (
-                    <SelectItem value="owner">
-                      <div className="flex items-center gap-2">
-                        <Crown className="w-4 h-4" />
-                        Owner
-                      </div>
-                    </SelectItem>
-                  )}
                   {(userRole === "owner" || userRole === "admin") && (
                     <SelectItem value="admin">
                       <div className="flex items-center gap-2">
@@ -146,10 +146,14 @@ export const CreateUserDialog = () => {
                 </SelectContent>
               </Select>
               <p className="text-xs text-muted-foreground">
-                {role === "owner" && "Full system access, can manage admins"}
                 {role === "admin" && "Can manage users and create accounts"}
                 {role === "user" && "Basic user access"}
               </p>
+              {userRole === "owner" && (
+                <p className="text-xs text-muted-foreground mt-2 italic">
+                  {t.ownerRoleNote}
+                </p>
+              )}
             </div>
           </div>
           <DialogFooter>

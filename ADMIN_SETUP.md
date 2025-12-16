@@ -65,11 +65,11 @@ The MathBook application now includes a comprehensive admin panel with:
 |--------|-------|-------|------|
 | Access Admin Panel | ✅ | ✅ | ❌ |
 | View Statistics | ✅ | ✅ | ❌ |
-| Create Users | ✅ | ✅ | ❌ |
-| Create Admins | ✅ | ✅ | ❌ |
-| Create Owners | ✅ | ❌ | ❌ |
-| Change User Roles | ✅ | ✅ (users only) | ❌ |
+| Create Users/Admins | ✅ | ✅ | ❌ |
+| Create Owners | ❌ (SQL only) | ❌ | ❌ |
+| Change User Roles | ✅ | ✅* | ❌ |
 | Change Admin Roles | ✅ | ❌ | ❌ |
+| Promote to Owner | ❌ (SQL only) | ❌ | ❌ |
 | Kick Users | ✅ | ✅ | ❌ |
 | Kick Admins | ✅ | ❌ | ❌ |
 | Generate Books | ✅ | ✅ | ✅ |
@@ -187,12 +187,7 @@ WHERE email = 'your-email@example.com';
 
 ### Method 2: Create New Owner Account
 
-1. **Temporarily enable signup** (optional):
-   - Comment out the signup removal in `AuthForm.tsx`
-   - Create your account through the app
-   - Re-disable signup
-
-2. **Or create directly in Supabase**:
+1. **Create directly in Supabase**:
 
 ```sql
 -- First, create the auth user
@@ -239,10 +234,11 @@ These stats are fetched from your configured `STATS_WEBHOOK_URL`.
 2. Enter email address
 3. Enter password (minimum 6 characters)
 4. Select role:
-   - **Owner**: Only if you're an owner
    - **Admin**: For trusted administrators
    - **User**: For regular users
 5. Click **"Create User"**
+
+**Note:** The Owner role is NOT available in the admin panel for security reasons. Owner accounts can only be created manually via SQL.
 
 The user will receive an email confirmation (if configured in Supabase).
 
@@ -250,8 +246,9 @@ The user will receive an email confirmation (if configured in Supabase).
 
 **As an Owner:**
 - Click the role dropdown next to any user
-- Select new role (Owner, Admin, or User)
+- Select new role (Admin or User only)
 - Role is updated immediately
+- **Note:** Cannot promote users to Owner via admin panel
 
 **As an Admin:**
 - Can only change roles for users (not admins or owners)
@@ -276,8 +273,9 @@ The user will receive an email confirmation (if configured in Supabase).
 ### 🔒 Best Practices
 
 1. **Limit Owner Accounts**
-   - Only create owner accounts for trusted administrators
+   - Only create owner accounts for trusted administrators via SQL
    - Keep the number of owners to a minimum (1-2 recommended)
+   - Owner role is intentionally NOT available in admin panel UI
 
 2. **Service Role Key Security**
    - Never commit `.env` files to version control
@@ -304,6 +302,7 @@ The user will receive an email confirmation (if configured in Supabase).
 
 - **Service Role Key**: Required on the server for admins to create users. Add `SUPABASE_SERVICE_ROLE_KEY` to `.env` file.
 - **Server-Side Security**: User creation now uses server-side API, so the service role key is never exposed to the client.
+- **Owner Role Restriction**: Owner accounts can ONLY be created/set via SQL for security. The admin panel does not allow creating or promoting users to owner role.
 - **First Owner**: Must be set manually via SQL. The application cannot auto-promote users to owner.
 - **Self-Deletion**: Owners cannot delete their own account through the UI (prevents lockout).
 - **Role Changes**: Take effect immediately but may require re-login for full effect.

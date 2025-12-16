@@ -132,6 +132,14 @@ app.post("/api/admin/users", async (req, res) => {
       });
     }
 
+    // Prevent creating owner accounts via API (security measure)
+    if (role === "owner") {
+      return res.status(403).json({
+        error:
+          "Owner accounts can only be created manually via SQL for security reasons",
+      });
+    }
+
     // Create user with Supabase Admin API
     const { data: authData, error: authError } =
       await supabaseAdmin.auth.admin.createUser({

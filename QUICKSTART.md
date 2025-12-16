@@ -234,6 +234,23 @@ WHERE id NOT IN (SELECT id FROM public.profiles);
 
 ## What's Next?
 
+### Important: Owner Role Restriction
+
+For security reasons, the Owner role **cannot** be set via the admin panel:
+- Owner option is hidden in the create user dialog
+- Owner option is hidden in role change dropdowns
+- Server-side validation prevents creating owner accounts via API
+- Owner accounts can ONLY be created/promoted via SQL
+
+**To create/promote an owner:**
+```sql
+UPDATE public.profiles 
+SET role = 'owner' 
+WHERE email = 'user@example.com';
+```
+
+This is intentional to prevent accidental or malicious owner account creation.
+
 ### Configure Stats Webhook
 
 Create an n8n workflow that returns:

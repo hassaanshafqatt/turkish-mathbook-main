@@ -176,14 +176,6 @@ export const UserManagement = () => {
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
-                        {userRole === "owner" && (
-                          <SelectItem value="owner">
-                            <div className="flex items-center gap-2">
-                              <Crown className="w-4 h-4" />
-                              Owner
-                            </div>
-                          </SelectItem>
-                        )}
                         {(userRole === "owner" || userRole === "admin") && (
                           <SelectItem value="admin">
                             <div className="flex items-center gap-2">
@@ -249,7 +241,9 @@ export const UserManagement = () => {
                         <AlertDialogFooter>
                           <AlertDialogCancel>Cancel</AlertDialogCancel>
                           <AlertDialogAction
-                            onClick={() => handleDeleteUser(user.id, user.email)}
+                            onClick={() =>
+                              handleDeleteUser(user.id, user.email)
+                            }
                             className="bg-destructive hover:bg-destructive/90"
                           >
                             Delete
