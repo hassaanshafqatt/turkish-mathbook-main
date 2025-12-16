@@ -11,6 +11,12 @@ import { toast } from "sonner";
 import { Loader2, Send } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 const API_URL = import.meta.env.DEV
   ? "http://localhost:7893/api/settings"
@@ -118,81 +124,149 @@ export const ProcessingForm = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6 animate-slide-up">
-      <FileUpload onFileSelect={setPdfFile} selectedFile={pdfFile} />
+    <TooltipProvider>
+      <form onSubmit={handleSubmit} className="space-y-6 animate-slide-up">
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <div>
+              <FileUpload onFileSelect={setPdfFile} selectedFile={pdfFile} />
+            </div>
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>{t.tooltipUploadPdf}</p>
+          </TooltipContent>
+        </Tooltip>
 
-      <FontSelector value={googleFont} onValueChange={setGoogleFont} />
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <div>
+              <FontSelector value={googleFont} onValueChange={setGoogleFont} />
+            </div>
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>{t.tooltipFont}</p>
+          </TooltipContent>
+        </Tooltip>
 
-      <VoiceSelector value={voiceId} onValueChange={setVoiceId} />
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <div>
+              <VoiceSelector value={voiceId} onValueChange={setVoiceId} />
+            </div>
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>{t.tooltipVoice}</p>
+          </TooltipContent>
+        </Tooltip>
 
-      <BackgroundColorSelector
-        value={backgroundColor}
-        onValueChange={setBackgroundColor}
-      />
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <div>
+              <BackgroundColorSelector
+                value={backgroundColor}
+                onValueChange={setBackgroundColor}
+              />
+            </div>
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>{t.tooltipBackgroundColor}</p>
+          </TooltipContent>
+        </Tooltip>
 
-      <VoiceInstructions
-        value={voiceInstructions}
-        onValueChange={setVoiceInstructions}
-      />
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <div>
+              <VoiceInstructions
+                value={voiceInstructions}
+                onValueChange={setVoiceInstructions}
+              />
+            </div>
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>{t.tooltipVoiceInstructions}</p>
+          </TooltipContent>
+        </Tooltip>
 
-      {/* Animation Toggles */}
-      <div className="space-y-4 border p-4 rounded-lg bg-card/50">
-        <h3 className="font-medium text-sm text-foreground mb-2">
-          {t.animationSettings}
-        </h3>
+        {/* Animation Toggles */}
+        <div className="space-y-4 border p-4 rounded-lg bg-card/50">
+          <h3 className="font-medium text-sm text-foreground mb-2">
+            {t.animationSettings}
+          </h3>
 
-        <div className="flex items-center justify-between space-x-2">
-          <Label
-            htmlFor="hand-animation"
-            className="flex flex-col space-y-1 cursor-pointer"
-          >
-            <span>{t.showHandAnimation}</span>
-            <span className="font-normal text-xs text-muted-foreground">
-              {t.showHandAnimationDesc}
-            </span>
-          </Label>
-          <Switch
-            id="hand-animation"
-            checked={showHandAnimation}
-            onCheckedChange={setShowHandAnimation}
-          />
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <div className="flex items-center justify-between space-x-2">
+                <Label
+                  htmlFor="hand-animation"
+                  className="flex flex-col space-y-1 cursor-pointer"
+                >
+                  <span>{t.showHandAnimation}</span>
+                  <span className="font-normal text-xs text-muted-foreground">
+                    {t.showHandAnimationDesc}
+                  </span>
+                </Label>
+                <Switch
+                  id="hand-animation"
+                  checked={showHandAnimation}
+                  onCheckedChange={setShowHandAnimation}
+                />
+              </div>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>{t.tooltipHandAnimation}</p>
+            </TooltipContent>
+          </Tooltip>
+
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <div className="flex items-center justify-between space-x-2">
+                <Label
+                  htmlFor="options-animation"
+                  className="flex flex-col space-y-1 cursor-pointer"
+                >
+                  <span>{t.showOptionsAnimation}</span>
+                  <span className="font-normal text-xs text-muted-foreground">
+                    {t.showOptionsAnimationDesc}
+                  </span>
+                </Label>
+                <Switch
+                  id="options-animation"
+                  checked={showOptionsAnimation}
+                  onCheckedChange={setShowOptionsAnimation}
+                />
+              </div>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>{t.tooltipOptionsAnimation}</p>
+            </TooltipContent>
+          </Tooltip>
         </div>
 
-        <div className="flex items-center justify-between space-x-2">
-          <Label
-            htmlFor="options-animation"
-            className="flex flex-col space-y-1 cursor-pointer"
-          >
-            <span>{t.showOptionsAnimation}</span>
-            <span className="font-normal text-xs text-muted-foreground">
-              {t.showOptionsAnimationDesc}
-            </span>
-          </Label>
-          <Switch
-            id="options-animation"
-            checked={showOptionsAnimation}
-            onCheckedChange={setShowOptionsAnimation}
-          />
-        </div>
-      </div>
-
-      <Button
-        type="submit"
-        disabled={isSubmitting}
-        className="w-full bg-gradient-primary hover:opacity-90 transition-opacity"
-      >
-        {isSubmitting ? (
-          <>
-            <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-            {t.generating}
-          </>
-        ) : (
-          <>
-            <Send className="w-4 h-4 mr-2" />
-            {t.generateButton}
-          </>
-        )}
-      </Button>
-    </form>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button
+              type="submit"
+              disabled={isSubmitting}
+              className="w-full bg-gradient-primary hover:opacity-90 transition-opacity"
+            >
+              {isSubmitting ? (
+                <>
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  {t.generating}
+                </>
+              ) : (
+                <>
+                  <Send className="w-4 h-4 mr-2" />
+                  {t.generateButton}
+                </>
+              )}
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>{t.tooltipGenerate}</p>
+          </TooltipContent>
+        </Tooltip>
+      </form>
+    </TooltipProvider>
   );
 };

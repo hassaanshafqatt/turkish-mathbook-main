@@ -170,6 +170,23 @@ const translations = {
     voiceAdded: "Voice added",
     voiceRemoved: "Voice removed",
     languageSaved: "Language saved",
+
+    // Tooltips
+    tooltipUploadPdf:
+      "Upload your PDF math document to generate interactive content",
+    tooltipFont: "Choose a Google Font for your mathbook text",
+    tooltipVoice: "Select an AI voice for narrating mathematical concepts",
+    tooltipBackgroundColor: "Choose a background color that suits your content",
+    tooltipVoiceInstructions:
+      "Provide custom instructions to fine-tune the AI narration",
+    tooltipHandAnimation:
+      "Toggle hand-writing animation effects in the generated content",
+    tooltipOptionsAnimation: "Toggle animation for answer options in questions",
+    tooltipGenerate:
+      "Submit your configuration to generate the mathbook content",
+    tooltipSettings: "Configure webhooks, voices, and language preferences",
+    tooltipUserMenu: "Access your account settings and admin panel",
+    tooltipRefreshBooks: "Reload the list of uploaded books",
   },
   tr: {
     // Ana sayfa
@@ -345,6 +362,25 @@ const translations = {
     voiceAdded: "Ses eklendi",
     voiceRemoved: "Ses kaldırıldı",
     languageSaved: "Dil kaydedildi",
+
+    // Tooltips
+    tooltipUploadPdf:
+      "İnteraktif içerik oluşturmak için PDF matematik belgenizi yükleyin",
+    tooltipFont: "Matematik kitabınız için bir Google Font seçin",
+    tooltipVoice:
+      "Matematiksel kavramları anlatmak için bir yapay zeka sesi seçin",
+    tooltipBackgroundColor: "İçeriğinize uygun bir arka plan rengi seçin",
+    tooltipVoiceInstructions:
+      "Yapay zeka anlatımını ince ayarlamak için özel talimatlar verin",
+    tooltipHandAnimation:
+      "Oluşturulan içerikte el yazısı animasyon efektlerini aç/kapat",
+    tooltipOptionsAnimation:
+      "Sorulardaki cevap seçenekleri için animasyonu aç/kapat",
+    tooltipGenerate:
+      "Matematik kitabı içeriğini oluşturmak için yapılandırmanızı gönderin",
+    tooltipSettings: "Webhook'ları, sesleri ve dil tercihlerini yapılandırın",
+    tooltipUserMenu: "Hesap ayarlarınıza ve yönetici paneline erişin",
+    tooltipRefreshBooks: "Yüklenen kitaplar listesini yeniden yükle",
   },
 };
 

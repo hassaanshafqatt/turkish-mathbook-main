@@ -61,36 +61,38 @@ const Index = () => {
           </div>
 
           {/* Sidebar Column */}
-          <div className="lg:col-span-1 space-y-6">
-            {/* Uploaded Books Section */}
-            <div className="bg-card/50 backdrop-blur-sm rounded-2xl shadow-xl border border-border/50 p-6 hover:shadow-2xl transition-shadow duration-300">
-              <UploadedBooks />
-            </div>
+          <div className="lg:col-span-1">
+            <div className="lg:sticky lg:top-24 space-y-6">
+              {/* Uploaded Books Section */}
+              <div className="bg-card/50 backdrop-blur-sm rounded-2xl shadow-xl border border-border/50 p-6 hover:shadow-2xl transition-shadow duration-300">
+                <UploadedBooks />
+              </div>
 
-            {/* Info Card */}
-            <div className="bg-gradient-to-br from-primary/10 to-primary/5 backdrop-blur-sm rounded-2xl border border-primary/20 p-6">
-              <h3 className="font-semibold text-foreground mb-2 flex items-center gap-2">
-                <Sparkles className="w-4 h-4 text-primary" />
-                {t.quickTips}
-              </h3>
-              <ul className="text-sm text-muted-foreground space-y-2">
-                <li className="flex items-start gap-2">
-                  <span className="text-primary mt-0.5">•</span>
-                  <span>{t.quickTip1}</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="text-primary mt-0.5">•</span>
-                  <span>{t.quickTip2}</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="text-primary mt-0.5">•</span>
-                  <span>{t.quickTip3}</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="text-primary mt-0.5">•</span>
-                  <span>{t.quickTip4}</span>
-                </li>
-              </ul>
+              {/* Info Card */}
+              <div className="bg-gradient-to-br from-primary/10 to-primary/5 backdrop-blur-sm rounded-2xl border border-primary/20 p-6">
+                <h3 className="font-semibold text-foreground mb-2 flex items-center gap-2">
+                  <Sparkles className="w-4 h-4 text-primary" />
+                  {t.quickTips}
+                </h3>
+                <ul className="text-sm text-muted-foreground space-y-2">
+                  <li className="flex items-start gap-2">
+                    <span className="text-primary mt-0.5">•</span>
+                    <span>{t.quickTip1}</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-primary mt-0.5">•</span>
+                    <span>{t.quickTip2}</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-primary mt-0.5">•</span>
+                    <span>{t.quickTip3}</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-primary mt-0.5">•</span>
+                    <span>{t.quickTip4}</span>
+                  </li>
+                </ul>
+              </div>
             </div>
           </div>
         </div>

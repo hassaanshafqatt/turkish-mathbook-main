@@ -9,6 +9,12 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
@@ -34,13 +40,15 @@ export interface AppSettings {
   language: string;
 }
 
-const API_URL = import.meta.env.DEV ? 'http://localhost:7893/api/settings' : '/api/settings';
+const API_URL = import.meta.env.DEV
+  ? "http://localhost:7893/api/settings"
+  : "/api/settings";
 
 export const SettingsDialog = () => {
   const [settings, setSettings] = useState<AppSettings>({
     webhooks: [],
     voices: [],
-    language: 'en'
+    language: "en",
   });
 
   // Webhook form state
@@ -64,7 +72,8 @@ export const SettingsDialog = () => {
         // Sync language to local storage for immediate UI translation updates if needed,
         // though ideally we'd use the settings state context.
         // For compatibility with useTranslation hook:
-        if (data.language) localStorage.setItem('mathbook_language', data.language);
+        if (data.language)
+          localStorage.setItem("mathbook_language", data.language);
       }
     } catch (error) {
       console.error("Failed to fetch settings:", error);
@@ -81,9 +90,9 @@ export const SettingsDialog = () => {
   const saveSettings = async (newSettings: AppSettings) => {
     try {
       const response = await fetch(API_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(newSettings)
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(newSettings),
       });
 
       if (!response.ok) throw new Error("Failed to save");
@@ -92,7 +101,7 @@ export const SettingsDialog = () => {
 
       // Update local storage for language
       if (newSettings.language !== settings.language) {
-        localStorage.setItem('mathbook_language', newSettings.language);
+        localStorage.setItem("mathbook_language", newSettings.language);
         window.location.reload();
       }
 
@@ -115,12 +124,12 @@ export const SettingsDialog = () => {
       id: crypto.randomUUID(),
       name: newWebhookName,
       url: newWebhookUrl,
-      active: settings.webhooks.length === 0 // Make active if it's the first one
+      active: settings.webhooks.length === 0, // Make active if it's the first one
     };
 
     const updatedSettings = {
       ...settings,
-      webhooks: [...settings.webhooks, newWebhook]
+      webhooks: [...settings.webhooks, newWebhook],
     };
 
     if (await saveSettings(updatedSettings)) {
@@ -133,7 +142,7 @@ export const SettingsDialog = () => {
   const handleDeleteWebhook = async (id: string) => {
     const updatedSettings = {
       ...settings,
-      webhooks: settings.webhooks.filter(w => w.id !== id)
+      webhooks: settings.webhooks.filter((w) => w.id !== id),
     };
     if (await saveSettings(updatedSettings)) {
       toast.success("Webhook removed");
@@ -143,10 +152,10 @@ export const SettingsDialog = () => {
   const handleSetActiveWebhook = async (id: string) => {
     const updatedSettings = {
       ...settings,
-      webhooks: settings.webhooks.map(w => ({
+      webhooks: settings.webhooks.map((w) => ({
         ...w,
-        active: w.id === id
-      }))
+        active: w.id === id,
+      })),
     };
     if (await saveSettings(updatedSettings)) {
       toast.success("Active webhook updated");
@@ -162,7 +171,7 @@ export const SettingsDialog = () => {
 
     const updatedSettings = {
       ...settings,
-      voices: [...settings.voices, { id: newVoiceId, name: newVoiceName }]
+      voices: [...settings.voices, { id: newVoiceId, name: newVoiceName }],
     };
 
     if (await saveSettings(updatedSettings)) {
@@ -175,7 +184,7 @@ export const SettingsDialog = () => {
   const handleDeleteVoice = async (id: string) => {
     const updatedSettings = {
       ...settings,
-      voices: settings.voices.filter(v => v.id !== id)
+      voices: settings.voices.filter((v) => v.id !== id),
     };
     if (await saveSettings(updatedSettings)) {
       toast.success(t.voiceRemoved);
@@ -191,179 +200,236 @@ export const SettingsDialog = () => {
   };
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button
-          variant="outline"
-          size="icon"
-          className="fixed left-6 bottom-6 h-12 w-12 rounded-full shadow-hover bg-card border-border hover:bg-accent z-50"
-        >
-          <Settings className="h-5 w-5" />
-        </Button>
-      </DialogTrigger>
-      <DialogContent className="sm:max-w-[600px] h-[80vh] flex flex-col">
-        <DialogHeader>
-          <DialogTitle>{t.settings}</DialogTitle>
-          <DialogDescription>
-            {t.settingsDescription}
-          </DialogDescription>
-        </DialogHeader>
+    <TooltipProvider>
+      <Dialog open={open} onOpenChange={setOpen}>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <DialogTrigger asChild>
+              <Button
+                variant="outline"
+                size="icon"
+                className="fixed left-6 bottom-6 h-12 w-12 rounded-full shadow-hover bg-card border-border hover:bg-accent z-50"
+              >
+                <Settings className="h-5 w-5" />
+              </Button>
+            </DialogTrigger>
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>{t.tooltipSettings}</p>
+          </TooltipContent>
+        </Tooltip>
+        <DialogContent className="sm:max-w-[600px] h-[80vh] flex flex-col">
+          <DialogHeader>
+            <DialogTitle>{t.settings}</DialogTitle>
+            <DialogDescription>{t.settingsDescription}</DialogDescription>
+          </DialogHeader>
 
-        <Tabs defaultValue="webhook" className="w-full flex-1 overflow-hidden flex flex-col">
-          <TabsList className="grid w-full grid-cols-3 shrink-0">
-            <TabsTrigger value="webhook">{t.webhook}</TabsTrigger>
-            <TabsTrigger value="voices">{t.voices}</TabsTrigger>
-            <TabsTrigger value="language">{t.language}</TabsTrigger>
-          </TabsList>
+          <Tabs
+            defaultValue="webhook"
+            className="w-full flex-1 overflow-hidden flex flex-col"
+          >
+            <TabsList className="grid w-full grid-cols-3 shrink-0">
+              <TabsTrigger value="webhook">{t.webhook}</TabsTrigger>
+              <TabsTrigger value="voices">{t.voices}</TabsTrigger>
+              <TabsTrigger value="language">{t.language}</TabsTrigger>
+            </TabsList>
 
-          <TabsContent value="webhook" className="space-y-4 flex-1 overflow-y-auto p-1">
-            <div className="space-y-4">
-              {/* Add New Webhook */}
-              <div className="grid gap-3 p-4 border rounded-lg bg-muted/50">
-                <p className="text-sm font-medium">{t.addNewWebhook}</p>
-                <div className="grid grid-cols-1 gap-2">
+            <TabsContent
+              value="webhook"
+              className="space-y-4 flex-1 overflow-y-auto p-1"
+            >
+              <div className="space-y-4">
+                {/* Add New Webhook */}
+                <div className="grid gap-3 p-4 border rounded-lg bg-muted/50">
+                  <p className="text-sm font-medium">{t.addNewWebhook}</p>
+                  <div className="grid grid-cols-1 gap-2">
+                    <Input
+                      placeholder={t.webhookName}
+                      value={newWebhookName}
+                      onChange={(e) => setNewWebhookName(e.target.value)}
+                      className="bg-background"
+                    />
+                    <Input
+                      type="url"
+                      placeholder={t.webhookUrlLabel}
+                      value={newWebhookUrl}
+                      onChange={(e) => setNewWebhookUrl(e.target.value)}
+                      className="bg-background"
+                    />
+                  </div>
+                  <Button
+                    onClick={handleAddWebhook}
+                    size="sm"
+                    className="w-full"
+                  >
+                    <Plus className="h-4 w-4 mr-2" />
+                    {t.addWebhookButton}
+                  </Button>
+                </div>
+
+                {/* List Webhooks */}
+                <div className="space-y-2">
+                  <Label>{t.savedWebhooks}</Label>
+                  {settings.webhooks.length === 0 ? (
+                    <p className="text-sm text-muted-foreground text-center py-4">
+                      {t.noWebhooksConfigured}
+                    </p>
+                  ) : (
+                    settings.webhooks.map((webhook) => (
+                      <div
+                        key={webhook.id}
+                        className={`flex items-center justify-between p-3 rounded-lg border ${webhook.active ? "border-primary bg-primary/5" : "border-border bg-background"}`}
+                      >
+                        <div className="flex-1 min-w-0 mr-2">
+                          <div className="flex items-center gap-2">
+                            <p className="font-medium truncate">
+                              {webhook.name}
+                            </p>
+                            {webhook.active && (
+                              <span className="text-[10px] bg-primary text-primary-foreground px-1.5 py-0.5 rounded">
+                                {t.activeWebhook}
+                              </span>
+                            )}
+                          </div>
+                          <p
+                            className="text-xs text-muted-foreground truncate"
+                            title={webhook.url}
+                          >
+                            {webhook.url}
+                          </p>
+                        </div>
+                        <div className="flex items-center gap-1">
+                          {!webhook.active && (
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              onClick={() => handleSetActiveWebhook(webhook.id)}
+                              title={t.setActive}
+                            >
+                              <Check className="h-4 w-4" />
+                            </Button>
+                          )}
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            onClick={() => handleDeleteWebhook(webhook.id)}
+                            title={t.deleteWebhook}
+                          >
+                            <Trash2 className="h-4 w-4 text-destructive" />
+                          </Button>
+                        </div>
+                      </div>
+                    ))
+                  )}
+                </div>
+              </div>
+            </TabsContent>
+
+            <TabsContent
+              value="voices"
+              className="space-y-4 flex-1 overflow-y-auto p-1"
+            >
+              <div className="space-y-4">
+                <div className="grid grid-cols-2 gap-3">
                   <Input
-                    placeholder={t.webhookName}
-                    value={newWebhookName}
-                    onChange={(e) => setNewWebhookName(e.target.value)}
-                    className="bg-background"
+                    placeholder={t.voiceIdPlaceholder}
+                    value={newVoiceId}
+                    onChange={(e) => setNewVoiceId(e.target.value)}
+                    className="bg-background border-border"
                   />
                   <Input
-                    type="url"
-                    placeholder={t.webhookUrlLabel}
-                    value={newWebhookUrl}
-                    onChange={(e) => setNewWebhookUrl(e.target.value)}
-                    className="bg-background"
+                    placeholder={t.voiceNamePlaceholder}
+                    value={newVoiceName}
+                    onChange={(e) => setNewVoiceName(e.target.value)}
+                    className="bg-background border-border"
                   />
                 </div>
-                <Button onClick={handleAddWebhook} size="sm" className="w-full">
+                <Button
+                  onClick={handleAddVoice}
+                  className="w-full"
+                  variant="outline"
+                >
                   <Plus className="h-4 w-4 mr-2" />
-                  {t.addWebhookButton}
+                  {t.addVoice}
                 </Button>
               </div>
 
-              {/* List Webhooks */}
               <div className="space-y-2">
-                <Label>{t.savedWebhooks}</Label>
-                {settings.webhooks.length === 0 ? (
-                  <p className="text-sm text-muted-foreground text-center py-4">{t.noWebhooksConfigured}</p>
+                {settings.voices.length === 0 ? (
+                  <p className="text-sm text-muted-foreground text-center py-4">
+                    {t.noVoicesConfigured}
+                  </p>
                 ) : (
-                  settings.webhooks.map((webhook) => (
-                    <div key={webhook.id} className={`flex items-center justify-between p-3 rounded-lg border ${webhook.active ? 'border-primary bg-primary/5' : 'border-border bg-background'}`}>
-                      <div className="flex-1 min-w-0 mr-2">
-                        <div className="flex items-center gap-2">
-                          <p className="font-medium truncate">{webhook.name}</p>
-                          {webhook.active && <span className="text-[10px] bg-primary text-primary-foreground px-1.5 py-0.5 rounded">{t.activeWebhook}</span>}
-                        </div>
-                        <p className="text-xs text-muted-foreground truncate" title={webhook.url}>{webhook.url}</p>
+                  settings.voices.map((voice) => (
+                    <div
+                      key={voice.id}
+                      className="flex items-center justify-between p-3 rounded-lg border border-border bg-background"
+                    >
+                      <div>
+                        <p className="font-medium text-foreground">
+                          {voice.name}
+                        </p>
+                        <p className="text-xs text-muted-foreground">
+                          {voice.id}
+                        </p>
                       </div>
-                      <div className="flex items-center gap-1">
-                        {!webhook.active && (
-                          <Button size="sm" variant="ghost" onClick={() => handleSetActiveWebhook(webhook.id)} title={t.setActive}>
-                            <Check className="h-4 w-4" />
-                          </Button>
-                        )}
-                        <Button size="sm" variant="ghost" onClick={() => handleDeleteWebhook(webhook.id)} title={t.deleteWebhook}>
-                          <Trash2 className="h-4 w-4 text-destructive" />
-                        </Button>
-                      </div>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => handleDeleteVoice(voice.id)}
+                      >
+                        <Trash2 className="h-4 w-4 text-destructive" />
+                      </Button>
                     </div>
                   ))
                 )}
               </div>
-            </div>
-          </TabsContent>
+            </TabsContent>
 
-          <TabsContent value="voices" className="space-y-4 flex-1 overflow-y-auto p-1">
-            <div className="space-y-4">
-              <div className="grid grid-cols-2 gap-3">
-                <Input
-                  placeholder={t.voiceIdPlaceholder}
-                  value={newVoiceId}
-                  onChange={(e) => setNewVoiceId(e.target.value)}
-                  className="bg-background border-border"
-                />
-                <Input
-                  placeholder={t.voiceNamePlaceholder}
-                  value={newVoiceName}
-                  onChange={(e) => setNewVoiceName(e.target.value)}
-                  className="bg-background border-border"
-                />
-              </div>
-              <Button onClick={handleAddVoice} className="w-full" variant="outline">
-                <Plus className="h-4 w-4 mr-2" />
-                {t.addVoice}
-              </Button>
-            </div>
-
-            <div className="space-y-2">
-              {settings.voices.length === 0 ? (
-                <p className="text-sm text-muted-foreground text-center py-4">
-                  {t.noVoicesConfigured}
-                </p>
-              ) : (
-                settings.voices.map((voice) => (
-                  <div
-                    key={voice.id}
-                    className="flex items-center justify-between p-3 rounded-lg border border-border bg-background"
+            <TabsContent
+              value="language"
+              className="space-y-4 flex-1 overflow-y-auto p-1"
+            >
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-foreground">
+                  {t.selectLanguage}
+                </label>
+                <div className="grid grid-cols-2 gap-3">
+                  <Button
+                    variant={settings.language === "en" ? "default" : "outline"}
+                    onClick={() => handleSaveLanguage("en")}
+                    className="w-full"
                   >
-                    <div>
-                      <p className="font-medium text-foreground">{voice.name}</p>
-                      <p className="text-xs text-muted-foreground">{voice.id}</p>
-                    </div>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => handleDeleteVoice(voice.id)}
-                    >
-                      <Trash2 className="h-4 w-4 text-destructive" />
-                    </Button>
-                  </div>
-                ))
-              )}
-            </div>
-          </TabsContent>
-
-          <TabsContent value="language" className="space-y-4 flex-1 overflow-y-auto p-1">
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-foreground">
-                {t.selectLanguage}
-              </label>
-              <div className="grid grid-cols-2 gap-3">
-                <Button
-                  variant={settings.language === "en" ? "default" : "outline"}
-                  onClick={() => handleSaveLanguage("en")}
-                  className="w-full"
-                >
-                  {t.english}
-                </Button>
-                <Button
-                  variant={settings.language === "tr" ? "default" : "outline"}
-                  onClick={() => handleSaveLanguage("tr")}
-                  className="w-full"
-                >
-                  {t.turkish}
-                </Button>
+                    {t.english}
+                  </Button>
+                  <Button
+                    variant={settings.language === "tr" ? "default" : "outline"}
+                    onClick={() => handleSaveLanguage("tr")}
+                    className="w-full"
+                  >
+                    {t.turkish}
+                  </Button>
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  {t.languageDescription}
+                </p>
               </div>
-              <p className="text-xs text-muted-foreground">
-                {t.languageDescription}
-              </p>
-            </div>
-          </TabsContent>
-        </Tabs>
-      </DialogContent>
-    </Dialog>
+            </TabsContent>
+          </Tabs>
+        </DialogContent>
+      </Dialog>
+    </TooltipProvider>
   );
 };
 
 // Helper functions for backwards compatibility with existing code
 export const getLanguage = () => {
-  return localStorage.getItem('mathbook_language') || 'en';
+  return localStorage.getItem("mathbook_language") || "en";
 };
 
 export const getConfiguredVoices = async (): Promise<Voice[]> => {
   try {
-    const API_URL = '/api/settings';
+    const API_URL = "/api/settings";
     const response = await fetch(API_URL);
     if (response.ok) {
       const data = await response.json();
@@ -377,15 +443,15 @@ export const getConfiguredVoices = async (): Promise<Voice[]> => {
 
 export const getWebhookUrl = async (): Promise<string> => {
   try {
-    const API_URL = '/api/settings';
+    const API_URL = "/api/settings";
     const response = await fetch(API_URL);
     if (response.ok) {
       const data = await response.json();
       const activeWebhook = data.webhooks?.find((w: Webhook) => w.active);
-      return activeWebhook?.url || '';
+      return activeWebhook?.url || "";
     }
   } catch (error) {
     console.error("Failed to fetch webhook:", error);
   }
-  return '';
+  return "";
 };
