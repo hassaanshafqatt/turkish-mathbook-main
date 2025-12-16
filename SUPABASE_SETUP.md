@@ -1,6 +1,6 @@
 # Supabase Authentication Setup Guide
 
-This guide will help you set up Supabase authentication for the Turkish Math Book application.
+This guide will help you set up Supabase authentication for the Questioneer application.
 
 ## Prerequisites
 

@@ -73,14 +73,12 @@ export const validateUrl = (url) => {
 
     // Prevent localhost/internal IP addresses in production
     const hostname = parsed.hostname.toLowerCase();
-    const dangerousHosts = [
-      "localhost",
-      "127.0.0.1",
-      "0.0.0.0",
-      "::1",
-    ];
+    const dangerousHosts = ["localhost", "127.0.0.1", "0.0.0.0", "::1"];
 
-    if (process.env.NODE_ENV === "production" && dangerousHosts.includes(hostname)) {
+    if (
+      process.env.NODE_ENV === "production" &&
+      dangerousHosts.includes(hostname)
+    ) {
       return false;
     }
 
@@ -108,7 +106,8 @@ export const validateUrl = (url) => {
  */
 export const validateUUID = (uuid) => {
   if (typeof uuid !== "string") return false;
-  const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+  const uuidRegex =
+    /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
   return uuidRegex.test(uuid);
 };
 
@@ -127,7 +126,10 @@ export const validatePassword = (password) => {
   }
 
   if (password.length > 128) {
-    return { valid: false, message: "Password is too long (max 128 characters)" };
+    return {
+      valid: false,
+      message: "Password is too long (max 128 characters)",
+    };
   }
 
   // Check for common weak passwords
@@ -275,7 +277,12 @@ export const securityHeadersConfig = {
       styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
       fontSrc: ["'self'", "https://fonts.gstatic.com"],
       imgSrc: ["'self'", "data:", "https:"],
-      connectSrc: ["'self'", "https://*.supabase.co"],
+      connectSrc: [
+        "'self'",
+        "https://*.supabase.co",
+        "https://www.googleapis.com",
+        "https://n8n.datavideocozum.com",
+      ],
       frameSrc: ["'none'"],
       objectSrc: ["'none'"],
       upgradeInsecureRequests: [],

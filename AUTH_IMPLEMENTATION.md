@@ -1,6 +1,6 @@
 # Authentication Implementation Guide
 
-This document explains how authentication is implemented in the Turkish Math Book application using Supabase.
+This document explains how authentication is implemented in the Questioneer application using Supabase.
 
 ## Architecture Overview
 

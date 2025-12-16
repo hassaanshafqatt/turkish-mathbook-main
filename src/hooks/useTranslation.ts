@@ -56,7 +56,7 @@ const translations = {
     voiceLabel: "Select Narration Voice",
     chooseVoice: "Choose a voice",
     noVoicesInSelector: "No voices configured. Please add voices in settings.",
-    voiceDescription: "AI voice for explaining math concepts and narration",
+    voiceDescription: "AI voice for explaining concepts and narration",
     generateButton: "Generate Content",
     generating: "Generating Content...",
 
@@ -176,7 +176,7 @@ const translations = {
     tooltipUploadPdf:
       "Upload your PDF document to generate interactive content",
     tooltipFont: "Choose a Google Font for your content text",
-    tooltipVoice: "Select an AI voice for narrating mathematical concepts",
+    tooltipVoice: "Select an AI voice for narrating educational concepts",
     tooltipBackgroundColor: "Choose a background color that suits your content",
     tooltipVoiceInstructions:
       "Provide custom instructions to fine-tune the AI narration",
@@ -205,8 +205,7 @@ const translations = {
     // Webhook sekmesi
     webhookUrl: "n8n Webhook URL",
     webhookPlaceholder: "https://your-n8n-instance.com/webhook/...",
-    webhookDescription:
-      "Matematik kitabı içeriğini işlemek için n8n webhook adresi",
+    webhookDescription: "Eğitim içeriğini işlemek için n8n webhook adresi",
     saveWebhook: "Webhook'u Kaydet",
     addNewWebhook: "Yeni Webhook Ekle",
     webhookName: "Webhook Adı (örn. Üretim)",
@@ -245,8 +244,7 @@ const translations = {
     chooseVoice: "Bir ses seçin",
     noVoicesInSelector:
       "Yapılandırılmış ses yok. Lütfen ayarlardan ses ekleyin.",
-    voiceDescription:
-      "Matematik kavramlarını açıklamak ve anlatım için yapay zeka sesi",
+    voiceDescription: "Kavramları açıklamak ve anlatım için yapay zeka sesi",
     generateButton: "İçerik Oluştur",
     generating: "İçerik Oluşturuluyor...",
 
@@ -354,7 +352,7 @@ const translations = {
     selectFontError: "Lütfen bir Font girin",
     selectVoiceError: "Lütfen bir ses seçin",
     configureWebhookError: "Lütfen ayarlardan webhook URL'sini yapılandırın",
-    submitSuccess: "Matematik kitabı oluşturma isteği başarıyla gönderildi!",
+    submitSuccess: "İçerik oluşturma isteği başarıyla gönderildi!",
     submitError: "İstek gönderilemedi. Lütfen tekrar deneyin.",
     webhookUrlError: "Lütfen bir webhook URL'si girin",
     webhookSaved: "Webhook kaydedildi",
@@ -365,10 +363,9 @@ const translations = {
 
     // Tooltips
     tooltipUploadPdf:
-      "İnteraktif içerik oluşturmak için PDF matematik belgenizi yükleyin",
+      "İnteraktif içerik oluşturmak için PDF belgenizi yükleyin",
     tooltipFont: "İçeriğiniz için bir Google Font seçin",
-    tooltipVoice:
-      "Matematiksel kavramları anlatmak için bir yapay zeka sesi seçin",
+    tooltipVoice: "Eğitim kavramlarını anlatmak için bir yapay zeka sesi seçin",
     tooltipBackgroundColor: "İçeriğinize uygun bir arka plan rengi seçin",
     tooltipVoiceInstructions:
       "Yapay zeka anlatımını ince ayarlamak için özel talimatlar verin",
