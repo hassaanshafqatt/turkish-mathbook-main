@@ -8,7 +8,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+
 import {
   BookOpen,
   FileQuestion,
@@ -204,25 +204,19 @@ export const AdminPanel = () => {
         </div>
       )}
 
-      {/* Tabs for User Management */}
-      <Tabs defaultValue="users" className="space-y-6">
-        <TabsList className="bg-muted">
-          <TabsTrigger value="users">User Management</TabsTrigger>
-        </TabsList>
-
-        <TabsContent value="users" className="space-y-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <h2 className="text-xl font-semibold text-foreground">Users</h2>
-              <p className="text-sm text-muted-foreground">
-                Manage user accounts and roles
-              </p>
-            </div>
-            <CreateUserDialog />
+      {/* User Management Section */}
+      <div className="space-y-4">
+        <div className="flex items-center justify-between">
+          <div>
+            <h2 className="text-xl font-semibold text-foreground">Users</h2>
+            <p className="text-sm text-muted-foreground">
+              Manage user accounts and roles
+            </p>
           </div>
-          <UserManagement />
-        </TabsContent>
-      </Tabs>
+          <CreateUserDialog />
+        </div>
+        <UserManagement />
+      </div>
     </div>
   );
 };

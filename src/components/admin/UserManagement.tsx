@@ -164,43 +164,53 @@ export const UserManagement = () => {
               <TableRow key={user.id}>
                 <TableCell className="font-medium">{user.email}</TableCell>
                 <TableCell>
-                  {canManage && !isCurrentUser ? (
-                    <Select
-                      value={user.role}
-                      onValueChange={(value) =>
-                        handleRoleChange(user.id, value as UserRole)
-                      }
-                      disabled={updatingUserId === user.id}
-                    >
-                      <SelectTrigger className="w-[140px]">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {(userRole === "owner" || userRole === "admin") && (
-                          <SelectItem value="admin">
+                  <Select
+                    value={user.role}
+                    onValueChange={(value) =>
+                      handleRoleChange(user.id, value as UserRole)
+                    }
+                    disabled={
+                      updatingUserId === user.id || !canManage || isCurrentUser
+                    }
+                  >
+                    <SelectTrigger className="w-[140px]">
+                      <SelectValue>
+                        <div className="flex items-center gap-2">
+                          <RoleIcon className="w-4 h-4" />
+                          {user.role.charAt(0).toUpperCase() +
+                            user.role.slice(1)}
+                        </div>
+                      </SelectValue>
+                    </SelectTrigger>
+                    <SelectContent>
+                      {canManage && !isCurrentUser ? (
+                        <>
+                          {(userRole === "owner" || userRole === "admin") && (
+                            <SelectItem value="admin">
+                              <div className="flex items-center gap-2">
+                                <Shield className="w-4 h-4" />
+                                Admin
+                              </div>
+                            </SelectItem>
+                          )}
+                          <SelectItem value="user">
                             <div className="flex items-center gap-2">
-                              <Shield className="w-4 h-4" />
-                              Admin
+                              <UserIcon className="w-4 h-4" />
+                              User
                             </div>
                           </SelectItem>
-                        )}
-                        <SelectItem value="user">
+                        </>
+                      ) : (
+                        <SelectItem value={user.role}>
                           <div className="flex items-center gap-2">
-                            <UserIcon className="w-4 h-4" />
-                            User
+                            <RoleIcon className="w-4 h-4" />
+                            {user.role.charAt(0).toUpperCase() +
+                              user.role.slice(1)}
                           </div>
                         </SelectItem>
-                      </SelectContent>
-                    </Select>
-                  ) : (
-                    <Badge
-                      className={roleBadgeVariants[user.role]}
-                      variant="secondary"
-                    >
-                      <RoleIcon className="w-3 h-3 mr-1" />
-                      {user.role.charAt(0).toUpperCase() + user.role.slice(1)}
-                    </Badge>
-                  )}
+                      )}
+                    </SelectContent>
+                  </Select>
                 </TableCell>
                 <TableCell className="text-muted-foreground text-sm">
                   {formatDate(user.created_at)}
