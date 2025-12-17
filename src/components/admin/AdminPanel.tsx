@@ -52,9 +52,9 @@ export const AdminPanel = () => {
 
       const data: StatsResponse = await response.json();
       setStats({
-        totalBooks: data.total_books || 0,
-        totalQuestions: data.total_questions || 0,
-        successRate: data.success_rate || 0,
+        totalBooks: Number(data.total_books) || 0,
+        totalQuestions: Number(data.total_questions) || 0,
+        successRate: Number(data.success_rate) || 0,
       });
     } catch (err) {
       console.error("Error fetching stats:", err);
@@ -194,7 +194,11 @@ export const AdminPanel = () => {
             </CardHeader>
             <CardContent>
               <div className="text-3xl font-bold text-foreground">
-                {stats.successRate.toFixed(1)}%
+                {(typeof stats.successRate === "number"
+                  ? stats.successRate
+                  : 0
+                ).toFixed(1)}
+                %
               </div>
               <p className="text-xs text-muted-foreground mt-1">
                 Processing success
