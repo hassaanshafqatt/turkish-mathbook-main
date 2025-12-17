@@ -87,7 +87,7 @@ export const UserMenu = () => {
           )}
           <DropdownMenuItem
             onClick={handleSignOut}
-            className="text-destructive focus:text-destructive"
+            className="text-destructive focus:text-primary-foreground hover:text-primary-foreground"
           >
             <LogOut className="mr-2 h-4 w-4" />
             <span>Sign Out</span>

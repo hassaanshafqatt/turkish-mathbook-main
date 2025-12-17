@@ -46,11 +46,7 @@ const Admin = () => {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-6">
               <div className="flex items-center gap-3">
-                <Logo
-                  showText={false}
-                  size="md"
-                  className="text-primary-foreground"
-                />
+                <Logo showText={false} size="md" className="text-primary" />
                 <div>
                   <h2 className="text-lg font-bold text-foreground tracking-tight">
                     Qlyra

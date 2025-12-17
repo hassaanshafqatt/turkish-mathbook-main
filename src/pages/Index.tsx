@@ -17,11 +17,7 @@ const Index = () => {
         <div className="container max-w-7xl mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <Logo
-                showText={false}
-                size="md"
-                className="text-primary-foreground"
-              />
+              <Logo showText={false} size="md" className="text-primary" />
               <div>
                 <h2 className="text-lg font-bold text-foreground tracking-tight">
                   Qlyra
