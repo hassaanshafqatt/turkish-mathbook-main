@@ -1,0 +1,66 @@
+<svg
+  width="540"
+  height="200"
+  viewBox="0 0 540 200"
+  xmlns="http://www.w3.org/2000/svg"
+>
+  <!-- Book emblem -->
+  <g transform="translate(40,30)">
+    <!-- Left page -->
+    <path
+      d="M0 20 Q40 0 80 20 V120 Q40 100 0 120 Z"
+      fill="none"
+      stroke="#DC143C"
+      stroke-width="3"
+    />
+
+    <!-- Right page -->
+    <path
+      d="M80 20 Q120 0 160 20 V120 Q120 100 80 120 Z"
+      fill="none"
+      stroke="#DC143C"
+      stroke-width="3"
+    />
+
+    <!-- Book spine -->
+    <line
+      x1="80"
+      y1="20"
+      x2="80"
+      y2="120"
+      stroke="#DC143C"
+      stroke-width="2"
+    />
+
+    <!-- Extraction lines -->
+    <line x1="20" y1="50" x2="60" y2="50" stroke="#DC143C" stroke-width="2"/>
+    <line x1="20" y1="70" x2="60" y2="70" stroke="#DC143C" stroke-width="2"/>
+    <line x1="100" y1="50" x2="140" y2="50" stroke="#DC143C" stroke-width="2"/>
+    <line x1="100" y1="70" x2="140" y2="70" stroke="#DC143C" stroke-width="2"/>
+  </g>
+
+  <!-- Brand name -->
+  <text
+    x="240"
+    y="110"
+    font-size="72"
+    font-weight="600"
+    font-family="Playfair Display, Georgia, Times New Roman, serif"
+    fill="#DC143C"
+    letter-spacing="1.5"
+  >
+    Qlyra
+  </text>
+
+  <!-- Tagline (Turkish) -->
+  <text
+    x="240"
+    y="145"
+    font-size="16"
+    font-family="Inter, Segoe UI, Arial, sans-serif"
+    fill="#DC143C"
+    letter-spacing="3"
+  >
+    BİLGİ · ÇIKARILDI
+  </text>
+</svg>

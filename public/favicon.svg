@@ -1,4 +1,43 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#0db9a8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-  <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/>
-</svg>
+<svg
+  width="64"
+  height="64"
+  viewBox="0 0 64 64"
+  xmlns="http://www.w3.org/2000/svg"
+>
+  <!-- Book emblem centered and scaled for favicon -->
+  <g transform="translate(2, 8)">
+    <!-- Left page -->
+    <path
+      d="M0 8 Q15 0 30 8 V48 Q15 40 0 48 Z"
+      fill="none"
+      stroke="#DC143C"
+      stroke-width="2.5"
+    />
 
+    <!-- Right page -->
+    <path
+      d="M30 8 Q45 0 60 8 V48 Q45 40 30 48 Z"
+      fill="none"
+      stroke="#DC143C"
+      stroke-width="2.5"
+    />
+
+    <!-- Book spine -->
+    <line
+      x1="30"
+      y1="8"
+      x2="30"
+      y2="48"
+      stroke="#DC143C"
+      stroke-width="2"
+    />
+
+    <!-- Extraction lines -->
+    <line x1="8" y1="20" x2="22" y2="20" stroke="#DC143C" stroke-width="2"/>
+    <line x1="8" y1="28" x2="22" y2="28" stroke="#DC143C" stroke-width="2"/>
+    <line x1="8" y1="36" x2="22" y2="36" stroke="#DC143C" stroke-width="2"/>
+    <line x1="38" y1="20" x2="52" y2="20" stroke="#DC143C" stroke-width="2"/>
+    <line x1="38" y1="28" x2="52" y2="28" stroke="#DC143C" stroke-width="2"/>
+    <line x1="38" y1="36" x2="52" y2="36" stroke="#DC143C" stroke-width="2"/>
+  </g>
+</svg>

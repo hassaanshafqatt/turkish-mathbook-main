@@ -1,10 +1,11 @@
 import { AdminPanel } from "@/components/admin/AdminPanel";
 import { UserMenu } from "@/components/auth/UserMenu";
 import { SettingsDialog } from "@/components/SettingsDialog";
-import { BookOpen, Home } from "lucide-react";
+import { Home } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useAdmin } from "@/contexts/AdminContext";
+import { Logo } from "@/components/Logo";
 
 const Admin = () => {
   const navigate = useNavigate();
@@ -45,9 +46,11 @@ const Admin = () => {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-6">
               <div className="flex items-center gap-3">
-                <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-primary shadow-lg">
-                  <BookOpen className="w-5 h-5 text-primary-foreground" />
-                </div>
+                <Logo
+                  showText={false}
+                  size="md"
+                  className="text-primary-foreground"
+                />
                 <div>
                   <h2 className="text-lg font-bold text-foreground tracking-tight">
                     Qlyra

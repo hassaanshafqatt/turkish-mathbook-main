@@ -2,9 +2,10 @@ import { ProcessingForm } from "@/components/ProcessingForm";
 import { SettingsDialog } from "@/components/SettingsDialog";
 import { UserMenu } from "@/components/auth/UserMenu";
 import { UploadedBooks } from "@/components/UploadedBooks";
-import { BookOpen, Sparkles } from "lucide-react";
+import { Sparkles } from "lucide-react";
 import { useTranslation } from "@/hooks/useTranslation";
 import { Separator } from "@/components/ui/separator";
+import { Logo } from "@/components/Logo";
 
 const Index = () => {
   const t = useTranslation();
@@ -16,9 +17,11 @@ const Index = () => {
         <div className="container max-w-7xl mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-primary shadow-lg">
-                <BookOpen className="w-5 h-5 text-primary-foreground" />
-              </div>
+              <Logo
+                showText={false}
+                size="md"
+                className="text-primary-foreground"
+              />
               <div>
                 <h2 className="text-lg font-bold text-foreground tracking-tight">
                   Qlyra
