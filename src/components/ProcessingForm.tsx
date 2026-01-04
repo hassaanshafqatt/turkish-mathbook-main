@@ -30,6 +30,7 @@ export const ProcessingForm = () => {
   // New Toggles
   const [showHandAnimation, setShowHandAnimation] = useState(true);
   const [showOptionsAnimation, setShowOptionsAnimation] = useState(true);
+  const [mathMode, setMathMode] = useState(false);
 
   const t = useTranslation();
   const { user } = useAuth();
@@ -100,6 +101,7 @@ export const ProcessingForm = () => {
       // Append new toggle values
       formData.append("showHandAnimation", showHandAnimation.toString());
       formData.append("showOptionsAnimation", showOptionsAnimation.toString());
+      formData.append("mathMode", mathMode.toString());
 
       const response = await fetch(webhookUrl, {
         method: "POST",
@@ -241,6 +243,30 @@ export const ProcessingForm = () => {
             </TooltipTrigger>
             <TooltipContent>
               <p>{t.tooltipOptionsAnimation}</p>
+            </TooltipContent>
+          </Tooltip>
+
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <div className="flex items-center justify-between space-x-2">
+                <Label
+                  htmlFor="math-mode"
+                  className="flex flex-col space-y-1 cursor-pointer"
+                >
+                  <span>{t.mathMode}</span>
+                  <span className="font-normal text-xs text-muted-foreground">
+                    {t.mathModeDesc}
+                  </span>
+                </Label>
+                <Switch
+                  id="math-mode"
+                  checked={mathMode}
+                  onCheckedChange={setMathMode}
+                />
+              </div>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>{t.tooltipMathMode}</p>
             </TooltipContent>
           </Tooltip>
         </div>

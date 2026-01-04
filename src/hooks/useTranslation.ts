@@ -189,6 +189,11 @@ const translations = {
     tooltipSettings: "Configure webhooks, voices, and language preferences",
     tooltipUserMenu: "Access your account settings and admin panel",
     tooltipRefreshBooks: "Reload the list of uploaded books",
+
+    // Math Mode
+    mathMode: "Math Mode",
+    mathModeDesc: "Specialized mode for mathematics textbooks",
+    tooltipMathMode: "Enable optimized processing for mathematical content and formulas",
   },
   tr: {
     // Ana sayfa
@@ -382,6 +387,11 @@ const translations = {
     tooltipSettings: "Webhook'ları, sesleri ve dil tercihlerini yapılandırın",
     tooltipUserMenu: "Hesap ayarlarınıza ve yönetici paneline erişin",
     tooltipRefreshBooks: "Yüklenen kitaplar listesini yeniden yükle",
+
+    // Matematik Modu
+    mathMode: "Matematik Modu (Beta)",
+    mathModeDesc: "Matematik ders kitapları için özel mod",
+    tooltipMathMode: "Matematiksel içerik ve formüller için optimize edilmiş işlemeyi etkinleştir",
   },
 };
 
