@@ -35,6 +35,14 @@ export const ProcessingForm = () => {
   const t = useTranslation();
   const { user } = useAuth();
 
+  const handleMathModeChange = (checked: boolean) => {
+    setMathMode(checked);
+    if (checked) {
+      setShowHandAnimation(false);
+      setShowOptionsAnimation(false);
+    }
+  };
+
   const getActiveWebhook = async () => {
     try {
       const { data, error } = await supabase
@@ -214,6 +222,7 @@ export const ProcessingForm = () => {
                   id="hand-animation"
                   checked={showHandAnimation}
                   onCheckedChange={setShowHandAnimation}
+                  disabled={mathMode}
                 />
               </div>
             </TooltipTrigger>
@@ -238,6 +247,7 @@ export const ProcessingForm = () => {
                   id="options-animation"
                   checked={showOptionsAnimation}
                   onCheckedChange={setShowOptionsAnimation}
+                  disabled={mathMode}
                 />
               </div>
             </TooltipTrigger>
@@ -261,7 +271,7 @@ export const ProcessingForm = () => {
                 <Switch
                   id="math-mode"
                   checked={mathMode}
-                  onCheckedChange={setMathMode}
+                  onCheckedChange={handleMathModeChange}
                 />
               </div>
             </TooltipTrigger>
